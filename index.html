@@ -1,0 +1,1158 @@
+html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GlowFit">
+<title>GlowFit</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f7f5;color:#1a1a1a;min-height:100vh}
+:root{--pink:#e8547a;--pink-light:#fce8ef;--pink-dark:#c03060;--green:#2da870;--amber:#e8a020;--red:#e84040;--gray:#6b6b6b;--border:#e0ddd8;--card:#fff;--bg:#f8f7f5;--purple:#7a30c0}
+.app{max-width:480px;margin:0 auto;padding:0 0 70px}
+.header{background:#fff;border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.logo{width:30px;height:30px;background:var(--pink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+.header-text{flex:1}
+.header h1{font-size:17px;font-weight:600}
+.header .sub{font-size:11px;color:var(--gray);margin-top:1px}
+.logout-btn{font-size:11px;color:var(--gray);border:1px solid var(--border);background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid var(--border);display:flex;z-index:100}
+.nav-btn{flex:1;padding:8px 2px 6px;border:none;background:none;cursor:pointer;font-size:9px;color:var(--gray);display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav-btn.active{color:var(--pink)}
+.nav-btn svg{width:18px;height:18px;stroke-width:1.8;fill:none;stroke:currentColor}
+.screen{display:none;padding:14px 14px 0}
+.screen.active{display:block}
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:14px;margin-bottom:10px}
+.card-title{font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+input[type=text],input[type=number],input[type=email],input[type=password],select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:9px;font-size:14px;background:#fafafa;color:#1a1a1a;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--pink);background:#fff}
+label{font-size:12px;color:var(--gray);display:block;margin-bottom:3px}
+.field{margin-bottom:11px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.btn{width:100%;padding:10px;border-radius:11px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--pink);color:#fff}
+.btn-primary:hover{background:var(--pink-dark)}
+.btn-sm{padding:6px 11px;font-size:11px;border-radius:7px;width:auto;border:none;cursor:pointer;font-weight:500}
+.btn-pink-sm{background:var(--pink);color:#fff}
+.btn-gray-sm{background:#f0ede8;color:#1a1a1a}
+.btn-green-sm{background:var(--green);color:#fff}
+.btn-amber-sm{background:var(--amber);color:#fff}
+.macro-rings{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}
+.ring-card{text-align:center;padding:9px 3px;background:var(--bg);border-radius:11px}
+.ring-label{font-size:10px;color:var(--gray);margin-bottom:3px}
+.ring-val{font-size:17px;font-weight:700}
+.ring-sub{font-size:9px;color:var(--gray);margin-top:2px}
+.cal-big{text-align:center;padding:14px 14px 10px}
+.cal-num{font-size:48px;font-weight:700;color:var(--pink);line-height:1}
+.cal-label{font-size:13px;color:var(--gray);margin-top:3px}
+.cal-breakdown{display:flex;justify-content:center;gap:18px;margin-top:10px}
+.cal-item .n{font-size:15px;font-weight:600;text-align:center}
+.cal-item .l{font-size:10px;color:var(--gray);text-align:center}
+.progress-bar{height:7px;background:#f0ede8;border-radius:4px;overflow:hidden;margin-top:7px}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s}
+.log-item{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid #f0ede8}
+.log-item:last-child{border-bottom:none}
+.log-del{width:24px;height:24px;border-radius:7px;border:none;background:#fce8ef;color:var(--pink);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.log-edit{width:24px;height:24px;border-radius:7px;border:none;background:#f0ede8;color:var(--gray);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.log-save{font-size:10px;color:var(--pink);border:1px solid var(--pink);background:#fff;border-radius:5px;padding:2px 6px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.empty-state{text-align:center;padding:18px;color:var(--gray);font-size:13px}
+.goal-pill{padding:4px 9px;border-radius:18px;font-size:11px;cursor:pointer;border:1.5px solid var(--border);background:#fff;font-weight:500;white-space:nowrap}
+.goal-pill.lose{border-color:#e84040;color:#e84040}.goal-pill.lose.active{background:#e84040;color:#fff}
+.goal-pill.build{border-color:#2da870;color:#2da870}.goal-pill.build.active{background:#2da870;color:#fff}
+.goal-pill.maintain{border-color:#e8a020;color:#e8a020}.goal-pill.maintain.active{background:#e8a020;color:#fff}
+.goal-pill.recomp{border-color:var(--purple);color:var(--purple)}.goal-pill.recomp.active{background:var(--purple);color:#fff}
+.tag{display:inline-block;padding:2px 7px;border-radius:18px;font-size:10px;font-weight:600;white-space:nowrap}
+.tag-compound{background:#fce8ef;color:#c03060}.tag-isolation{background:#f0e8fe;color:#7a30c0}
+.tag-mixed{background:#e8f4fe;color:#1a7ac8}.tag-cardio{background:#eaf7f0;color:#1a7a50}
+.tag-hiit{background:#fff3e0;color:#b85c00}.tag-steps{background:#f0ede8;color:#6b6b6b}
+.mode-badge{text-align:center;margin-top:6px;font-size:11px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:18px 18px 0 0;padding:18px 18px 28px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:14px}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray);margin-top:-3px}
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:var(--bg)}
+.auth-card{background:#fff;border-radius:18px;border:1px solid var(--border);padding:24px 20px;width:100%;max-width:380px}
+.auth-logo{width:44px;height:44px;background:var(--pink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;margin:0 auto 10px}
+.auth-title{text-align:center;font-size:20px;font-weight:700;margin-bottom:3px}
+.auth-sub{text-align:center;font-size:13px;color:var(--gray);margin-bottom:20px}
+.auth-switch{text-align:center;font-size:12px;color:var(--gray);margin-top:10px}
+.auth-switch span{color:var(--pink);cursor:pointer;font-weight:600}
+.err{color:var(--red);font-size:12px;margin-top:5px;display:none}
+.err.show{display:block}
+.meal-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0ede8}
+.meal-row:last-child{border-bottom:none}
+.adj-opts{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.adj-opt{padding:5px 9px;border-radius:7px;border:1.5px solid var(--border);background:#fff;font-size:12px;cursor:pointer;font-weight:500}
+.adj-opt.active{background:var(--green);color:#fff;border-color:var(--green)}
+.info-box{border-radius:9px;padding:9px 11px;font-size:12px;margin-bottom:9px}
+.info-box-purple{background:#f0e8fe;color:#5a20a0}
+.info-box-green{background:#eaf7f0;color:#1a6040}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-nav{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.cal-month{font-size:14px;font-weight:600}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-dow{text-align:center;font-size:10px;color:var(--gray);padding:3px 0}
+.cal-day{text-align:center;padding:6px 2px;border-radius:9px;font-size:13px;cursor:pointer;position:relative;transition:background .15s;user-select:none}
+.cal-day:hover{background:#f0ede8}
+.cal-day.today{font-weight:700;color:var(--pink)}
+.cal-day.selected{background:var(--pink);color:#fff;font-weight:700}
+.cal-day.future{color:#bbb}
+.cal-day.has-data::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--pink);position:absolute;bottom:1px;left:50%;transform:translateX(-50%)}
+.cal-day.selected::after{background:#fff!important}
+.cal-day.projected::after{background:var(--amber)}
+.cal-day.edited-day::after{background:var(--purple)}
+.cal-day.skipped-day::after{background:var(--gray)}
+.cal-day.estimated-day::after{background:var(--amber)}
+.cal-day.empty{cursor:default;pointer-events:none}
+.history-panel{overflow:hidden;max-height:0;transition:max-height .4s ease;margin-top:3px}
+.history-panel.open{max-height:4000px}
+.hist-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px}
+.hist-macro{text-align:center;background:var(--bg);border-radius:9px;padding:7px 3px}
+.hist-macro .val{font-size:15px;font-weight:700}
+.hist-macro .lbl{font-size:10px;color:var(--gray);margin-top:1px}
+.hist-section{font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin:9px 0 5px;display:flex;align-items:center;justify-content:space-between}
+.overage-modal{background:#fff;border-radius:18px 18px 0 0;padding:20px 18px 32px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+.overage-title{font-size:17px;font-weight:700;margin-bottom:5px}
+.overage-sub{font-size:13px;color:var(--gray);margin-bottom:18px}
+.overage-option{display:flex;align-items:center;gap:10px;padding:11px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:9px;cursor:pointer;transition:all .2s}
+.overage-option:hover{border-color:var(--pink);background:#fce8ef}
+.overage-option .opt-icon{font-size:20px;flex-shrink:0}
+.overage-option .opt-title{font-size:13px;font-weight:600}
+.overage-option .opt-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.recal-banner{background:linear-gradient(135deg,#fce8ef,#f0e8fe);border-radius:11px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:9px}
+.edit-mode-banner{background:#fff3e0;border-radius:11px;padding:9px 12px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between}
+.toggle-tab{display:flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:12px}
+.toggle-tab button{flex:1;padding:7px;border:none;font-size:12px;cursor:pointer;font-weight:500}
+.toggle-tab .active-tab{background:var(--pink);color:#fff}
+.toggle-tab .inactive-tab{background:#fff;color:var(--gray)}
+.measure-entry{padding:10px 0;border-bottom:1px solid #f0ede8}
+.measure-entry:last-child{border-bottom:none}
+.measure-date{font-size:11px;color:var(--pink);font-weight:600;margin-bottom:7px}
+.measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.measure-item{font-size:12px;display:flex;justify-content:space-between;padding:2px 0}
+.measure-val{font-weight:600}
+.report-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0ede8}
+.report-row:last-child{border-bottom:none}
+.report-label{color:var(--gray);font-size:12px}
+.report-val{font-weight:600;font-size:12px}
+.report-good{color:var(--green)}.report-bad{color:var(--red)}.report-warn{color:var(--amber)}
+.supp-item{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0ede8}
+.supp-item:last-child{border-bottom:none}
+.supp-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;transition:all .2s}
+.supp-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.supp-name{flex:1;font-size:13px;font-weight:500}
+.supp-note{font-size:10px;color:var(--gray)}
+.colour-group{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0ede8}
+.colour-group:last-child{border-bottom:none}
+.colour-dot{width:26px;height:26px;border-radius:50%;flex-shrink:0}
+.colour-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;transition:all .2s}
+.colour-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.missed-option{display:flex;align-items:flex-start;gap:10px;padding:11px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:9px;cursor:pointer;transition:all .2s}
+.missed-option:hover{border-color:var(--pink);background:#fce8ef}
+.missed-opt-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.missed-opt-title{font-size:13px;font-weight:600}
+.missed-opt-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.explore-tabs{display:flex;overflow-x:auto;gap:6px;padding-bottom:2px;margin-bottom:14px;scrollbar-width:none}
+.explore-tabs::-webkit-scrollbar{display:none}
+.explore-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border:1.5px solid var(--border);background:#fff;color:var(--gray);transition:all .2s;flex-shrink:0}
+.explore-tab.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.food-card{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:all .2s}
+.food-card:hover{border-color:var(--pink)}
+.food-card-header{display:flex;align-items:center;justify-content:space-between;padding:12px;cursor:pointer}
+.food-card-name{font-size:14px;font-weight:600}
+.food-card-sub{font-size:11px;color:var(--gray);margin-top:2px}
+.food-card-cals{font-size:13px;font-weight:700;color:var(--pink)}
+.food-card-body{padding:0 12px 12px;display:none}
+.food-card-body.open{display:block}
+.food-macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.food-macro{text-align:center;background:var(--bg);border-radius:8px;padding:7px 4px}
+.food-macro .fmv{font-size:14px;font-weight:700}
+.food-macro .fml{font-size:10px;color:var(--gray);margin-top:1px}
+.food-vit{font-size:12px;color:var(--gray);margin-bottom:8px;line-height:1.5}
+.food-serving{font-size:12px;background:#fce8ef;border-radius:8px;padding:7px 10px;margin-bottom:10px;color:var(--pink-dark)}
+.macro-section{margin-bottom:16px}
+.macro-section-title{font-size:13px;font-weight:700;color:var(--pink);margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--pink-light)}
+.macro-rank-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0ede8;font-size:13px}
+.macro-rank-item:last-child{border-bottom:none}
+.macro-rank-name{font-weight:500;flex:1}
+.vit-group-title{font-size:13px;font-weight:700;margin:14px 0 8px;color:var(--purple)}
+.vit-chip{display:inline-block;padding:5px 12px;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;margin:3px;transition:all .2s}
+.vit-chip.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.vit-note{font-size:12px;color:var(--gray);background:var(--bg);border-radius:9px;padding:9px;margin-bottom:10px;line-height:1.5}
+.compare-slot{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:10px;min-height:80px;cursor:pointer;transition:all .2s;text-align:center}
+.compare-slot:hover{border-color:var(--pink)}
+.compare-slot.filled{border-color:var(--green);text-align:left;cursor:default}
+.compare-row{display:flex;gap:6px;padding:6px 0;border-bottom:1px solid #f0ede8;font-size:12px}
+.compare-row:last-child{border-bottom:none}
+.compare-label{color:var(--gray);width:80px;flex-shrink:0;font-size:11px}
+.compare-a{flex:1;font-weight:600;text-align:center}
+.compare-b{flex:1;font-weight:600;text-align:center}
+.better{color:var(--green)}.worse{color:var(--red)}.same-val{color:var(--gray)}
+.sync-indicator{font-size:10px;color:var(--gray);text-align:center;padding:4px 0}
+.saving{color:var(--amber)}.saved{color:var(--green)}.save-err{color:var(--red)}
+.loading-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:var(--bg)}
+.spinner{width:40px;height:40px;border:3px solid var(--pink-light);border-top-color:var(--pink);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-wrap" id="loading-wrap">
+  <div class="logo" style="width:52px;height:52px;font-size:20px;background:var(--pink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">GF</div>
+  <div class="spinner"></div>
+  <div style="font-size:13px;color:var(--gray)">Loading GlowFit...</div>
+</div>
+
+<!-- AUTH -->
+<div class="auth-wrap" id="auth-wrap" style="display:none">
+  <div class="auth-card">
+    <div class="auth-logo">GF</div>
+    <div class="auth-title">GlowFit</div>
+    <div class="auth-sub" id="auth-sub">Sign in to your account</div>
+    <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="you@email.com"/></div>
+    <div class="field"><label>Password</label><input type="password" id="auth-pass" placeholder="••••••••"/></div>
+    <div class="field" id="auth-pass2-wrap" style="display:none"><label>Confirm password</label><input type="password" id="auth-pass2" placeholder="••••••••"/></div>
+    <div class="err" id="auth-err"></div>
+    <button class="btn btn-primary" style="margin-top:5px" onclick="authSubmit()" id="auth-btn">Sign in</button>
+    <div class="auth-switch" id="auth-switch">No account? <span onclick="toggleAuth()">Create one</span></div>
+  </div>
+</div>
+
+<div id="main-app" style="display:none">
+<div class="app">
+<div class="header">
+  <div class="logo">GF</div>
+  <div class="header-text"><h1>GlowFit</h1><div class="sub" id="header-sub">Your body, your goals</div></div>
+  <div id="sync-status" class="sync-indicator" style="margin-right:6px"></div>
+  <button class="logout-btn" onclick="logout()">Log out</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="screen active" id="screen-home">
+  <div id="no-profile-msg" class="card" style="text-align:center;padding:22px">
+    <div style="font-size:30px;margin-bottom:7px">👋</div>
+    <div style="font-weight:600;margin-bottom:5px">Welcome to GlowFit!</div>
+    <div style="font-size:13px;color:var(--gray);margin-bottom:12px">Set up your profile to get started.</div>
+    <button class="btn btn-primary" onclick="goTo('profile')">Set up profile</button>
+  </div>
+  <div id="dashboard" style="display:none">
+    <div class="card">
+      <div class="cal-big">
+        <div class="cal-num" id="cals-remaining">—</div>
+        <div class="cal-label" id="cals-label">calories remaining today</div>
+      </div>
+      <div class="cal-breakdown">
+        <div class="cal-item"><div class="n" id="dash-target">—</div><div class="l">target</div></div>
+        <div class="cal-item"><div class="n" id="dash-eaten">0</div><div class="l">eaten</div></div>
+        <div class="cal-item"><div class="n" id="dash-burned">0</div><div class="l">burned</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="cal-progress" style="background:var(--pink);width:0%"></div></div>
+      <div class="mode-badge" id="mode-badge"></div>
+      <div id="balance-badge" style="text-align:center;font-size:11px;margin-top:3px;display:none"></div>
+    </div>
+    <div class="macro-rings">
+      <div class="ring-card"><div class="ring-label">Protein</div><div class="ring-val" id="p-eaten" style="color:var(--pink)">0g</div><div class="ring-sub" id="p-tgt">of —g</div></div>
+      <div class="ring-card"><div class="ring-label">Carbs</div><div class="ring-val" id="c-eaten" style="color:var(--amber)">0g</div><div class="ring-sub" id="c-tgt">of —g</div></div>
+      <div class="ring-card"><div class="ring-label">Fat</div><div class="ring-val" id="f-eaten" style="color:var(--purple)">0g</div><div class="ring-sub" id="f-tgt">of —g</div></div>
+      <div class="ring-card"><div class="ring-label">Fibre</div><div class="ring-val" id="fi-eaten" style="color:var(--green)">0g</div><div class="ring-sub" id="fi-tgt">of —g</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="card-title" style="margin-bottom:0">Today's food</div>
+        <button class="btn-sm btn-pink-sm" onclick="openFoodModal(null)">+ Add food</button>
+      </div>
+      <div id="food-log-list"><div class="empty-state">Nothing logged yet</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="card-title" style="margin-bottom:0">Today's exercise</div>
+        <button class="btn-sm btn-pink-sm" onclick="openExModal(null)">+ Add exercise</button>
+      </div>
+      <div id="ex-log-list"><div class="empty-state">No exercise logged</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="card-title" style="margin-bottom:0">Supplements</div>
+        <button class="btn-sm btn-gray-sm" onclick="openSuppModal()">Manage</button>
+      </div>
+      <div id="supp-checklist"><div class="empty-state" style="padding:8px 0">No supplements added yet</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Food colour guide</div>
+      <div style="font-size:11px;color:var(--gray);margin-bottom:9px">Did you eat something from each group today?</div>
+      <div id="colour-checklist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="screen" id="screen-history">
+  <div id="recal-banner" class="recal-banner" style="display:none">
+    <div style="font-size:12px;font-weight:500;color:var(--pink-dark)">📝 Unsaved edits</div>
+    <button class="btn-sm btn-pink-sm" onclick="triggerRecalibrate()">Recalibrate</button>
+  </div>
+  <div id="missed-days-banner" style="display:none" class="card"></div>
+  <div class="card">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">&#8249;</button>
+      <div class="cal-month" id="cal-month-label"></div>
+      <button class="cal-nav" onclick="changeMonth(1)">&#8250;</button>
+    </div>
+    <div class="cal-grid" id="cal-dow-row"></div>
+    <div class="cal-grid" id="cal-days-grid"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--gray)">
+      <span>🩷 logged</span><span>🟡 estimate</span><span>⚫ skipped</span><span>🟣 edited</span><span>🟠 projected</span>
+    </div>
+  </div>
+  <div class="history-panel" id="history-panel">
+    <div class="card" id="history-card"></div>
+  </div>
+</div>
+
+<!-- SAVED -->
+<div class="screen" id="screen-meals">
+  <div style="margin:3px 0 10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+      <div style="font-size:15px;font-weight:600">Saved meals</div>
+      <button class="btn-sm btn-pink-sm" onclick="openSaveMealModal()">+ New meal</button>
+    </div>
+    <div id="saved-meals-list"><div class="empty-state">No saved meals yet</div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:14px 0 7px">
+      <div style="font-size:15px;font-weight:600">Saved exercises</div>
+      <button class="btn-sm btn-pink-sm" onclick="openSaveExModal()">+ New exercise</button>
+    </div>
+    <div id="saved-exercises-list"><div class="empty-state">No saved exercises yet</div></div>
+  </div>
+</div>
+
+<!-- EXPLORE -->
+<div class="screen" id="screen-explore">
+  <div class="explore-tabs" id="explore-main-tabs">
+    <div class="explore-tab active" onclick="switchExploreSection('food',this)">🍎 Food Explorer</div>
+    <div class="explore-tab" onclick="switchExploreSection('macro',this)">💪 Macro Guide</div>
+    <div class="explore-tab" onclick="switchExploreSection('vitamin',this)">🌿 Vitamins & Minerals</div>
+    <div class="explore-tab" onclick="switchExploreSection('compare',this)">⚖️ Quick Compare</div>
+  </div>
+  <div id="explore-food">
+    <div style="display:flex;gap:8px;margin-bottom:12px"><input type="text" id="food-search" placeholder="Search foods..." oninput="renderFoodExplorer()" style="flex:1"/></div>
+    <div class="explore-tabs" id="food-cat-tabs">
+      <div class="explore-tab active" onclick="setFoodCat('all',this)">All</div>
+      <div class="explore-tab" onclick="setFoodCat('fruits',this)">Fruits</div>
+      <div class="explore-tab" onclick="setFoodCat('vegetables',this)">Vegetables</div>
+      <div class="explore-tab" onclick="setFoodCat('meat',this)">Meat & Fish</div>
+      <div class="explore-tab" onclick="setFoodCat('dairy',this)">Dairy & Eggs</div>
+      <div class="explore-tab" onclick="setFoodCat('grains',this)">Grains & Legumes</div>
+      <div class="explore-tab" onclick="setFoodCat('nuts',this)">Nuts & Seeds</div>
+    </div>
+    <div id="food-explorer-list"></div>
+  </div>
+  <div id="explore-macro" style="display:none">
+    <div class="explore-tabs">
+      <div class="explore-tab active" onclick="setMacroFilter('protein',this)">High Protein</div>
+      <div class="explore-tab" onclick="setMacroFilter('carbs',this)">High Carb</div>
+      <div class="explore-tab" onclick="setMacroFilter('fat',this)">High Fat</div>
+      <div class="explore-tab" onclick="setMacroFilter('fibre',this)">High Fibre</div>
+      <div class="explore-tab" onclick="setMacroFilter('lowcal',this)">Low Cal & Filling</div>
+    </div>
+    <div id="macro-guide-list"></div>
+  </div>
+  <div id="explore-vitamin" style="display:none">
+    <div id="vit-chips"></div>
+    <div id="vit-detail"></div>
+  </div>
+  <div id="explore-compare" style="display:none">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <div class="compare-slot" id="compare-slot-a" onclick="openComparePicker('a')"><div style="font-size:11px;color:var(--gray)">Food A</div><div style="font-size:13px;color:var(--pink);margin-top:4px">Tap to choose</div></div>
+      <div class="compare-slot" id="compare-slot-b" onclick="openComparePicker('b')"><div style="font-size:11px;color:var(--gray)">Food B</div><div style="font-size:13px;color:var(--pink);margin-top:4px">Tap to choose</div></div>
+    </div>
+    <div id="compare-result"></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="card">
+    <div class="card-title">Basic info</div>
+    <div class="row" style="margin-bottom:9px"><div class="field" style="margin-bottom:0"><label>Height unit</label><select id="p-height-unit" onchange="toggleHeightUnit()"><option value="cm">cm</option><option value="ft">ft / in</option></select></div><div></div></div>
+    <div class="field" id="height-cm-field"><label>Height (cm)</label><input type="number" id="p-height-cm" placeholder="150"/></div>
+    <div id="height-ft-field" style="display:none;gap:8px"><div class="field" style="flex:1"><label>Feet</label><input type="number" id="p-height-ft" placeholder="4"/></div><div class="field" style="flex:1"><label>Inches</label><input type="number" id="p-height-in" placeholder="11"/></div></div>
+    <div class="row" style="margin-top:5px"><div class="field"><label>Weight</label><input type="number" id="p-weight" placeholder="65"/></div><div class="field"><label>Unit</label><select id="p-weight-unit"><option value="kg">kg</option><option value="lbs">lbs</option></select></div></div>
+    <div class="row"><div class="field"><label>Age</label><input type="number" id="p-age" placeholder="25"/></div><div class="field"><label>Gender</label><select id="p-gender"><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option></select></div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div class="card-title" style="margin-bottom:0">Measurements (cm)</div><button class="btn-sm btn-pink-sm" onclick="openMeasureLogModal()">Log new</button></div>
+    <div class="row"><div class="field"><label>Natural waist</label><input type="number" id="m-waist" placeholder="70"/></div><div class="field"><label>Lower abdominal</label><input type="number" id="m-lower-ab" placeholder="75"/></div></div>
+    <div class="row"><div class="field"><label>Hip</label><input type="number" id="m-hip" placeholder="95"/></div><div class="field"><label>Bust</label><input type="number" id="m-bust" placeholder="88"/></div></div>
+    <div class="row"><div class="field"><label>Gluteal</label><input type="number" id="m-glute" placeholder="98"/></div><div class="field"><label>Thigh</label><input type="number" id="m-thigh" placeholder="56"/></div></div>
+    <div class="row"><div class="field"><label>Calf</label><input type="number" id="m-calf" placeholder="36"/></div><div class="field"><label>Upper arm</label><input type="number" id="m-arm" placeholder="28"/></div></div>
+    <button class="btn-sm btn-gray-sm" style="margin-top:3px" onclick="openMeasureHistoryModal()">View history</button>
+  </div>
+  <div class="card"><div class="card-title">Goals per zone</div><div style="font-size:12px;color:var(--gray);margin-bottom:9px">Recomp = lose fat + build muscle at maintenance</div><div id="goal-zones"></div></div>
+  <div class="card">
+    <div class="card-title">Change password</div>
+    <div class="field"><label>Current password</label><input type="password" id="pw-current" placeholder="••••••••"/></div>
+    <div class="field"><label>New password</label><input type="password" id="pw-new" placeholder="••••••••"/></div>
+    <div class="field"><label>Confirm new password</label><input type="password" id="pw-confirm" placeholder="••••••••"/></div>
+    <div class="err" id="pw-err"></div>
+    <button class="btn btn-primary" onclick="changePassword()">Change password</button>
+  </div>
+  <button class="btn btn-primary" style="margin-bottom:9px" onclick="saveProfile()">Save profile</button>
+  <button class="btn" style="background:#fff3e0;color:var(--amber);border:1.5px solid var(--amber);margin-bottom:9px" onclick="openStartFreshModal()">Start fresh</button>
+  <button class="btn" style="background:#fff;color:var(--red);border:1.5px solid var(--red);margin-bottom:8px" onclick="deleteAccount()">Delete account</button>
+</div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="goTo('home')" id="nav-home"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>Today</button>
+  <button class="nav-btn" onclick="goTo('history')" id="nav-history"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>History</button>
+  <button class="nav-btn" onclick="goTo('meals')" id="nav-meals"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Saved</button>
+  <button class="nav-btn" onclick="goTo('explore')" id="nav-explore"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Explore</button>
+  <button class="nav-btn" onclick="goTo('profile')" id="nav-profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</button>
+</nav>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="modal-food"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-food')">×</button>
+  <div class="modal-title" id="food-modal-title">Add food</div>
+  <div id="food-tabs" style="display:flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:14px">
+    <button id="tab-manual" onclick="switchFoodTab('manual')" style="flex:1;padding:8px;border:none;background:var(--pink);color:#fff;font-size:11px;font-weight:600;cursor:pointer">Manual</button>
+    <button id="tab-saved-meals" onclick="switchFoodTab('saved')" style="flex:1;padding:8px;border:none;background:#fff;color:var(--gray);font-size:11px;cursor:pointer">Saved meals</button>
+    <button id="tab-explore-food" onclick="switchFoodTab('explore')" style="flex:1;padding:8px;border:none;background:#fff;color:var(--gray);font-size:11px;cursor:pointer">Explore 🔍</button>
+  </div>
+  <div id="food-tab-manual">
+    <div class="field"><label>Food name</label><input type="text" id="fi-name" placeholder="e.g. Apple"/></div>
+    <div class="row"><div class="field"><label>Calories (kcal)</label><input type="number" id="fi-cals" placeholder="52" min="0"/></div><div class="field"><label>Protein (g)</label><input type="number" id="fi-protein" placeholder="0" min="0" step="0.1"/></div></div>
+    <div class="row"><div class="field"><label>Carbs (g)</label><input type="number" id="fi-carbs" placeholder="14" min="0" step="0.1"/></div><div class="field"><label>Fat (g)</label><input type="number" id="fi-fat" placeholder="0" min="0" step="0.1"/></div></div>
+    <div class="field"><label>Fibre (g)</label><input type="number" id="fi-fibre" placeholder="2" min="0" step="0.1"/></div>
+    <div style="display:flex;gap:7px;margin-top:3px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="submitFoodModal(false)">Save</button>
+      <button class="btn btn-gray-sm" style="padding:10px;font-size:13px" onclick="submitFoodModal(true)">Save + add to meals library</button>
+    </div>
+  </div>
+  <div id="food-tab-saved" style="display:none"><div id="modal-saved-list"><div class="empty-state">No saved meals yet</div></div></div>
+  <div id="food-tab-explore" style="display:none">
+    <input type="text" id="modal-explore-search" placeholder="Search foods e.g. chicken, apple..." oninput="renderModalExploreList()" style="margin-bottom:10px"/>
+    <div id="modal-explore-list"><div class="empty-state">Start typing to search</div></div>
+  </div>
+</div></div>
+
+<div class="modal-bg" id="modal-ex"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-ex')">×</button>
+  <div class="modal-title" id="ex-modal-title">Log exercise</div>
+  <div id="ex-tabs" style="display:flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:14px">
+    <button id="tab-ex-manual" onclick="switchExTab('manual')" style="flex:1;padding:8px;border:none;background:var(--pink);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Enter manually</button>
+    <button id="tab-ex-saved" onclick="switchExTab('saved')" style="flex:1;padding:8px;border:none;background:#fff;color:var(--gray);font-size:12px;cursor:pointer">From saved</button>
+  </div>
+  <div id="ex-tab-manual">
+    <div class="field"><label>Exercise name</label><input type="text" id="ex-name" placeholder="e.g. Leg press"/></div>
+    <div class="field"><label>Exercise type</label>
+      <select id="ex-type" onchange="updateExSuggestion()">
+        <option value="compound">Compound strength</option><option value="isolation">Isolation strength</option>
+        <option value="mixed">Mixed / full body</option><option value="cardio">Steady cardio</option>
+        <option value="hiit">Intense cardio / HIIT</option><option value="steps">Steps only</option>
+      </select>
+    </div>
+    <div class="field"><label>Calories burned</label><input type="number" id="ex-cals" placeholder="200" min="0"/></div>
+    <div class="row"><div class="field"><label>Protein bump (g)</label><input type="number" id="ex-protein-bump" placeholder="0" min="0" step="0.5"/></div><div class="field"><label>Carb bump (g)</label><input type="number" id="ex-carb-bump" placeholder="0" min="0" step="0.5"/></div></div>
+    <div id="ex-info-box" class="info-box info-box-purple" style="display:none"></div>
+    <div class="field"><label>Add calories to</label>
+      <div class="adj-opts" id="cal-adj-opts">
+        <button class="adj-opt active" onclick="setCalAdj('today',this)">Today</button>
+        <button class="adj-opt" onclick="setCalAdj('tomorrow',this)">Tomorrow</button>
+        <button class="adj-opt" onclick="setCalAdj('day2',this)">Day after</button>
+      </div>
+    </div>
+    <div class="field" id="protein-adj-field"><label>Start protein bump from</label>
+      <div class="adj-opts" id="prot-adj-opts">
+        <button class="adj-opt active" onclick="setProtAdj('today',this)">Today</button>
+        <button class="adj-opt" onclick="setProtAdj('tomorrow',this)">Tomorrow</button>
+        <button class="adj-opt" onclick="setProtAdj('day2',this)">Day after</button>
+      </div>
+    </div>
+    <div id="ex-split-info" class="info-box info-box-green" style="display:none"></div>
+    <div style="display:flex;gap:7px;margin-top:7px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="submitExModal(false)">Save</button>
+      <button class="btn btn-gray-sm" style="padding:10px;font-size:13px" onclick="submitExModal(true)">Save + add to library</button>
+    </div>
+  </div>
+  <div id="ex-tab-saved" style="display:none"><div id="modal-saved-ex-list"><div class="empty-state">No saved exercises yet</div></div></div>
+</div></div>
+
+<div class="modal-bg" id="modal-save-meal"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-save-meal')">×</button>
+  <div class="modal-title">Save new meal</div>
+  <div class="field"><label>Meal name</label><input type="text" id="sm-name" placeholder="e.g. Protein oats"/></div>
+  <div class="row"><div class="field"><label>Calories</label><input type="number" id="sm-cals" placeholder="0" min="0"/></div><div class="field"><label>Protein (g)</label><input type="number" id="sm-protein" placeholder="0" min="0" step="0.1"/></div></div>
+  <div class="row"><div class="field"><label>Carbs (g)</label><input type="number" id="sm-carbs" placeholder="0" min="0" step="0.1"/></div><div class="field"><label>Fat (g)</label><input type="number" id="sm-fat" placeholder="0" min="0" step="0.1"/></div></div>
+  <div class="field"><label>Fibre (g)</label><input type="number" id="sm-fibre" placeholder="0" min="0" step="0.1"/></div>
+  <button class="btn btn-primary" onclick="saveMealFromModal()">Save meal</button>
+</div></div>
+
+<div class="modal-bg" id="modal-save-ex"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-save-ex')">×</button>
+  <div class="modal-title">Save new exercise</div>
+  <div class="field"><label>Name</label><input type="text" id="se-name" placeholder="e.g. Leg press 40kg 3x12"/></div>
+  <div class="field"><label>Type</label><select id="se-type"><option value="compound">Compound strength</option><option value="isolation">Isolation strength</option><option value="mixed">Mixed / full body</option><option value="cardio">Steady cardio</option><option value="hiit">HIIT</option><option value="steps">Steps</option></select></div>
+  <div class="row"><div class="field"><label>Calories burned</label><input type="number" id="se-cals" placeholder="200" min="0"/></div><div class="field"><label>Protein bump (g)</label><input type="number" id="se-protein" placeholder="0" min="0" step="0.5"/></div></div>
+  <div class="field"><label>Carb bump (g)</label><input type="number" id="se-carbs" placeholder="0" min="0" step="0.5"/></div>
+  <button class="btn btn-primary" onclick="saveExFromModal()">Save exercise</button>
+</div></div>
+
+<div class="modal-bg" id="modal-qty"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-qty')">×</button>
+  <div class="modal-title" id="qty-title">Add meal</div>
+  <div style="background:var(--bg);border-radius:10px;padding:10px;margin-bottom:12px;font-size:12px" id="qty-base-info"></div>
+  <div class="field"><label>Quantity (%)</label><input type="number" id="qty-pct" value="100" min="1" max="1000" step="1"/><div style="font-size:11px;color:var(--gray);margin-top:3px">100% = full · 50% = half · 200% = double</div></div>
+  <div style="background:#fce8ef;border-radius:10px;padding:10px;font-size:12px;margin-bottom:12px" id="qty-preview"></div>
+  <button class="btn btn-primary" onclick="confirmQtyAdd()">Add to log</button>
+</div></div>
+
+<div class="modal-bg" id="modal-explore-add"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-explore-add')">×</button>
+  <div class="modal-title" id="explore-add-title">Add food</div>
+  <div style="background:var(--bg);border-radius:10px;padding:10px;margin-bottom:12px;font-size:12px" id="explore-add-info"></div>
+  <div class="field"><label>How many grams did you have?</label><input type="number" id="explore-add-grams" placeholder="e.g. 150" min="1"/><div style="font-size:11px;color:var(--gray);margin-top:3px" id="explore-add-hint"></div></div>
+  <div style="background:#fce8ef;border-radius:10px;padding:10px;font-size:12px;margin-bottom:12px" id="explore-add-preview"></div>
+  <button class="btn btn-primary" onclick="confirmExploreAdd()">Add to today</button>
+</div></div>
+
+<div class="modal-bg" id="modal-compare-picker"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-compare-picker')">×</button>
+  <div class="modal-title">Choose food</div>
+  <input type="text" id="compare-search" placeholder="Search..." oninput="renderComparePicker()" style="margin-bottom:12px"/>
+  <div id="compare-picker-list"></div>
+</div></div>
+
+<div class="modal-bg" id="modal-overage"><div class="overage-modal">
+  <button class="modal-close" onclick="closeModal('modal-overage')" style="float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray)">×</button>
+  <div class="overage-title" id="overage-title">You're over your limit 🍕</div>
+  <div class="overage-sub" id="overage-sub"></div>
+  <div class="overage-option" onclick="handleOverage('forget')"><div class="opt-icon">🎉</div><div><div class="opt-title">Forget about it</div><div class="opt-sub">Cheat day — clean slate tomorrow</div></div></div>
+  <div class="overage-option" onclick="handleOverage('carryover')"><div class="opt-icon">➡️</div><div><div class="opt-title">Carry over to tomorrow</div><div class="opt-sub">Full overage reduces tomorrow's target</div></div></div>
+  <div class="overage-option" onclick="handleOverage('splitweek')"><div class="opt-icon">📅</div><div><div class="opt-title">Split across remaining week</div><div class="opt-sub" id="splitweek-sub">Until Sunday</div></div></div>
+  <div class="overage-option" onclick="handleOverage('split7')"><div class="opt-icon">🗓️</div><div><div class="opt-title">Split across 7 days</div><div class="opt-sub">Divided equally over 7 days</div></div></div>
+</div></div>
+
+<div class="modal-bg" id="modal-credit"><div class="overage-modal">
+  <button class="modal-close" onclick="closeModal('modal-credit')" style="float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray)">×</button>
+  <div class="overage-title">You finished under 🌟</div>
+  <div class="overage-sub" id="credit-sub"></div>
+  <div class="overage-option" onclick="handleCredit('today')"><div class="opt-icon">⚡</div><div><div class="opt-title">Extra calories today</div><div class="opt-sub">Add your credit to today's target</div></div></div>
+  <div class="overage-option" onclick="handleCredit('splitweek')"><div class="opt-icon">📅</div><div><div class="opt-title">Split across remaining week</div><div class="opt-sub">Spread the bonus until Sunday</div></div></div>
+  <div class="overage-option" onclick="handleCredit('split7')"><div class="opt-icon">🗓️</div><div><div class="opt-title">Split across 7 days</div><div class="opt-sub">Spread over 7 days from today</div></div></div>
+</div></div>
+
+<div class="modal-bg" id="modal-summary"><div class="overage-modal">
+  <div class="overage-title" id="summary-title">Yesterday's report 📊</div>
+  <div style="font-size:12px;color:var(--gray);margin-bottom:12px" id="summary-date"></div>
+  <div id="summary-rows"></div>
+  <div style="background:var(--bg);border-radius:10px;padding:10px;margin:12px 0;font-size:12px" id="summary-impact"></div>
+  <button class="btn btn-primary" onclick="closeSummary()">Got it</button>
+</div></div>
+
+<div class="modal-bg" id="modal-nudge"><div class="overage-modal">
+  <button class="modal-close" onclick="closeModal('modal-nudge')" style="float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray)">×</button>
+  <div class="overage-title" id="nudge-title">Heads up 👀</div>
+  <div style="font-size:13px;color:var(--gray);margin-bottom:18px;line-height:1.5" id="nudge-body"></div>
+  <button class="btn btn-primary" onclick="closeModal('modal-nudge')">Got it</button>
+</div></div>
+
+<div class="modal-bg" id="modal-missed"><div class="overage-modal">
+  <div class="overage-title" id="missed-title">Missed day 📅</div>
+  <div class="overage-sub" id="missed-sub"></div>
+  <div class="missed-option" onclick="handleMissed('exact')"><div class="missed-opt-icon">✏️</div><div><div class="missed-opt-title">I know exactly what I ate</div><div class="missed-opt-sub">Open edit mode for this day</div></div></div>
+  <div class="missed-option" onclick="handleMissed('estimate')"><div class="missed-opt-icon">🤔</div><div><div class="missed-opt-title">I have a rough idea</div><div class="missed-opt-sub">Edit mode — day marked as estimate</div></div></div>
+  <div class="missed-option" onclick="handleMissed('fasting')"><div class="missed-opt-icon">🍵</div><div><div class="missed-opt-title">I barely ate / was fasting</div><div class="missed-opt-sub">Enter approx calories only</div></div></div>
+  <div class="missed-option" onclick="handleMissed('skip')"><div class="missed-opt-icon">⏭️</div><div><div class="missed-opt-title">Skip this day</div><div class="missed-opt-sub">Treated as if you ate exactly on target</div></div></div>
+  <div class="missed-option" onclick="handleMissed('fresh')"><div class="missed-opt-icon">🌱</div><div><div class="missed-opt-title">Start fresh from today</div><div class="missed-opt-sub">Reset all adjustments, keep history</div></div></div>
+</div></div>
+
+<div class="modal-bg" id="modal-fasting"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-fasting')">×</button>
+  <div class="modal-title">Approximate intake</div>
+  <div style="font-size:12px;color:var(--gray);margin-bottom:12px" id="fasting-date-label"></div>
+  <div class="field"><label>Approximate calories eaten</label><input type="number" id="fasting-cals" placeholder="e.g. 400" min="0"/></div>
+  <button class="btn btn-primary" onclick="submitFasting()">Save</button>
+</div></div>
+
+<div class="modal-bg" id="modal-supp"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-supp')">×</button>
+  <div class="modal-title">Manage supplements</div>
+  <div id="supp-manage-list"></div>
+  <div style="height:1px;background:var(--border);margin:12px 0"></div>
+  <div class="field"><label>Add supplement</label><input type="text" id="supp-new-name" placeholder="e.g. Omega 3"/></div>
+  <div class="field"><label>Note (optional)</label><input type="text" id="supp-new-note" placeholder="e.g. ~9 kcal per capsule"/></div>
+  <button class="btn btn-primary" onclick="addSupplement()">Add</button>
+</div></div>
+
+<div class="modal-bg" id="modal-start-fresh"><div class="modal">
+  <div style="text-align:center;padding:7px 0 14px">
+    <div style="font-size:36px;margin-bottom:10px">🌱</div>
+    <div style="font-size:17px;font-weight:700;margin-bottom:7px">Start fresh?</div>
+    <div style="font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.5">Resets your calorie balance to zero from today. History preserved.</div>
+    <button class="btn btn-primary" style="margin-bottom:9px" onclick="confirmStartFresh()">Yes, start fresh</button>
+    <button class="btn btn-gray-sm" style="width:100%;padding:10px" onclick="closeModal('modal-start-fresh')">Cancel</button>
+  </div>
+</div></div>
+
+<div class="modal-bg" id="modal-delete-account"><div class="modal">
+  <div style="text-align:center;padding:7px 0 14px">
+    <div style="font-size:36px;margin-bottom:10px">⚠️</div>
+    <div style="font-size:17px;font-weight:700;margin-bottom:7px">Delete account?</div>
+    <div style="font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.5">Permanently erases <strong>all</strong> your data from the cloud. Cannot be undone.</div>
+    <button class="btn" style="background:var(--red);color:#fff;margin-bottom:9px" onclick="confirmDeleteAccount()">Yes, delete my account</button>
+    <button class="btn btn-gray-sm" style="width:100%;padding:10px" onclick="closeModal('modal-delete-account')">Cancel</button>
+  </div>
+</div></div>
+
+<div class="modal-bg" id="modal-measure-log"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-measure-log')">×</button>
+  <div class="modal-title">Log body measurements</div>
+  <div class="row"><div class="field"><label>Natural waist</label><input type="number" id="ml-waist"/></div><div class="field"><label>Lower abdominal</label><input type="number" id="ml-lower-ab"/></div></div>
+  <div class="row"><div class="field"><label>Hip</label><input type="number" id="ml-hip"/></div><div class="field"><label>Bust</label><input type="number" id="ml-bust"/></div></div>
+  <div class="row"><div class="field"><label>Gluteal</label><input type="number" id="ml-glute"/></div><div class="field"><label>Thigh</label><input type="number" id="ml-thigh"/></div></div>
+  <div class="row"><div class="field"><label>Calf</label><input type="number" id="ml-calf"/></div><div class="field"><label>Upper arm</label><input type="number" id="ml-arm"/></div></div>
+  <div style="font-size:12px;font-weight:600;margin-bottom:9px;margin-top:3px">Update goals</div>
+  <div id="ml-goal-zones"></div>
+  <button class="btn btn-primary" style="margin-top:12px" onclick="saveMeasurementLog()">Save measurements</button>
+</div></div>
+
+<div class="modal-bg" id="modal-measure-history"><div class="modal">
+  <button class="modal-close" onclick="closeModal('modal-measure-history')">×</button>
+  <div class="modal-title">Measurement history</div>
+  <div class="toggle-tab"><button class="active-tab" onclick="switchMeasureTab('list',this)">All entries</button><button class="inactive-tab" onclick="switchMeasureTab('compare',this)">Compare latest vs previous</button></div>
+  <div id="measure-tab-list"></div>
+  <div id="measure-tab-compare" style="display:none"></div>
+</div></div>
+
+<script>
+const SUPABASE_URL='https://azmzstobweknaogllgwj.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6bXpzdG9id2VrbmFvZ2xsZ3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3MzA3ODMsImV4cCI6MjA5NjMwNjc4M30.ubmRknpLnTjnALXg0hDIviVauAfzXg5-eRlUA-LRCE4';
+const API=`${SUPABASE_URL}/rest/v1`;
+const AUTH=`${SUPABASE_URL}/auth/v1`;
+let accessToken=null;
+let currentUserId=null;
+let saveTimer=null;
+
+async function sbFetch(url,opts={}){
+  const headers={'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${accessToken||SUPABASE_KEY}`,...(opts.headers||{})};
+  const res=await fetch(url,{...opts,headers});
+  if(!res.ok){const e=await res.json().catch(()=>({message:res.statusText}));throw new Error(e.message||e.error_description||'Request failed');}
+  const ct=res.headers.get('content-type')||'';
+  return ct.includes('json')?res.json():null;
+}
+
+let isSignup=false;
+function toggleAuth(){
+  isSignup=!isSignup;
+  document.getElementById('auth-sub').textContent=isSignup?'Create your account':'Sign in to your account';
+  document.getElementById('auth-btn').textContent=isSignup?'Create account':'Sign in';
+  document.getElementById('auth-pass2-wrap').style.display=isSignup?'block':'none';
+  document.getElementById('auth-switch').innerHTML=isSignup?'Already have an account? <span onclick="toggleAuth()">Sign in</span>':'No account? <span onclick="toggleAuth()">Create one</span>';
+  document.getElementById('auth-err').classList.remove('show');
+}
+async function authSubmit(){
+  const email=document.getElementById('auth-email').value.trim().toLowerCase();
+  const pass=document.getElementById('auth-pass').value;
+  const err=document.getElementById('auth-err');err.classList.remove('show');
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.classList.add('show');return;}
+  if(!email.includes('@')){err.textContent='Please enter a valid email.';err.classList.add('show');return;}
+  document.getElementById('auth-btn').textContent='Please wait...';
+  try{
+    if(isSignup){
+      const p2=document.getElementById('auth-pass2').value;
+      if(pass!==p2){err.textContent='Passwords do not match.';err.classList.add('show');document.getElementById('auth-btn').textContent='Create account';return;}
+      if(pass.length<6){err.textContent='Password must be at least 6 characters.';err.classList.add('show');document.getElementById('auth-btn').textContent='Create account';return;}
+      const data=await sbFetch(`${AUTH}/signup`,{method:'POST',body:JSON.stringify({email,password:pass})});
+      if(data.access_token){accessToken=data.access_token;currentUserId=data.user.id;localStorage.setItem('gf_token',accessToken);localStorage.setItem('gf_uid',currentUserId);await initApp();}
+      else{err.textContent='Check your email to confirm your account.';err.classList.add('show');}
+    } else {
+      const data=await sbFetch(`${AUTH}/token?grant_type=password`,{method:'POST',body:JSON.stringify({email,password:pass})});
+      accessToken=data.access_token;currentUserId=data.user.id;
+      localStorage.setItem('gf_token',accessToken);localStorage.setItem('gf_uid',currentUserId);
+      await initApp();
+    }
+  } catch(e){err.textContent=e.message||'Something went wrong. Please try again.';err.classList.add('show');}
+  document.getElementById('auth-btn').textContent=isSignup?'Create account':'Sign in';
+}
+async function logout(){
+  try{await sbFetch(`${AUTH}/logout`,{method:'POST'});}catch(e){}
+  accessToken=null;currentUserId=null;
+  localStorage.removeItem('gf_token');localStorage.removeItem('gf_uid');
+  state=getDefaultState();
+  document.getElementById('auth-wrap').style.display='flex';
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('auth-email').value='';document.getElementById('auth-pass').value='';
+}
+async function changePassword(){
+  const cur=document.getElementById('pw-current').value;
+  const nw=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-confirm').value;
+  const err=document.getElementById('pw-err');err.classList.remove('show');
+  if(nw.length<6){err.textContent='New password must be at least 6 characters.';err.classList.add('show');return;}
+  if(nw!==cf){err.textContent='New passwords do not match.';err.classList.add('show');return;}
+  try{
+    await sbFetch(`${AUTH}/user`,{method:'PUT',body:JSON.stringify({password:nw})});
+    document.getElementById('pw-current').value='';document.getElementById('pw-new').value='';document.getElementById('pw-confirm').value='';
+    alert('Password changed successfully! ✅');
+  }catch(e){err.textContent='Failed to change password. Try signing out and back in.';err.classList.add('show');}
+}
+
+function setSyncStatus(s){
+  const el=document.getElementById('sync-status');
+  if(!el)return;
+  if(s==='saving'){el.textContent='⏳ Saving...';el.className='sync-indicator saving';}
+  else if(s==='saved'){el.textContent='☁️ Saved';el.className='sync-indicator saved';setTimeout(()=>{el.textContent='';},2000);}
+  else if(s==='error'){el.textContent='⚠️ Save failed';el.className='sync-indicator save-err';}
+}
+async function loadData(){
+  try{
+    const rows=await sbFetch(`${API}/gf_data?id=eq.${currentUserId}`,{headers:{'Accept':'application/json'}});
+    if(rows&&rows.length>0&&rows[0].data){
+      const saved=rows[0].data;
+      state={...getDefaultState(),...saved};
+      if(Array.isArray(state.savedMeals)){const a=state.savedMeals;state.savedMeals={};a.forEach((m,i)=>state.savedMeals['m'+i]=m);}
+      if(!state.savedExercises)state.savedExercises={};
+      if(!state.goals)state.goals={};
+      ZONES.forEach(z=>{if(!state.goals[z.id])state.goals[z.id]='maintain';});
+      if(!state.supplements||!state.supplements.length)state.supplements=DEFAULT_SUPPS.map(s=>({...s}));
+    }
+  }catch(e){console.error('Load error',e);}
+}
+async function saveData(){
+  if(!currentUserId||!accessToken)return;
+  setSyncStatus('saving');
+  snapshotToday();
+  try{
+    await sbFetch(`${API}/gf_data`,{
+      method:'POST',
+      headers:{'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({id:currentUserId,data:state,updated_at:new Date().toISOString()})
+    });
+    setSyncStatus('saved');
+  }catch(e){setSyncStatus('error');console.error('Save error',e);}
+}
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveData,800);
+}
+
+async function initApp(){
+  document.getElementById('loading-wrap').style.display='flex';
+  document.getElementById('auth-wrap').style.display='none';
+  document.getElementById('main-app').style.display='none';
+  await loadData();
+  if(state.profile)calcTargets();
+  checkMidnightReset();
+  document.getElementById('loading-wrap').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  runDailyPrompts();
+  renderDashboard();
+}
+
+async function tryAutoLogin(){
+  const token=localStorage.getItem('gf_token');
+  const uid=localStorage.getItem('gf_uid');
+  if(!token||!uid){
+    document.getElementById('loading-wrap').style.display='none';
+    document.getElementById('auth-wrap').style.display='flex';
+    return;
+  }
+  try{
+    const user=await sbFetch(`${AUTH}/user`,{headers:{'Authorization':`Bearer ${token}`}});
+    accessToken=token;
+    currentUserId=user.id;
+    await initApp();
+  }catch(e){
+    localStorage.removeItem('gf_token');
+    localStorage.removeItem('gf_uid');
+    document.getElementById('loading-wrap').style.display='none';
+    document.getElementById('auth-wrap').style.display='flex';
+  }
+}
+
+async function confirmDeleteAccount(){
+  try{
+    await sbFetch(`${API}/gf_data?id=eq.${currentUserId}`,{method:'DELETE'});
+    await sbFetch(`${API}/gf_users?id=eq.${currentUserId}`,{method:'DELETE'});
+    await logout();
+  }catch(e){alert('Error deleting account. Please try again.');}
+  closeModal('modal-delete-account');
+}
+
+const FOODS=[
+  {id:'apple',name:'Apple',cat:'fruits',cal:52,p:0.3,c:14,f:0.2,fi:2.4,serving:'1 medium (182g)',servingG:182,vit:{vitC:8,potassium:107,folate:3}},
+  {id:'banana',name:'Banana',cat:'fruits',cal:89,p:1.1,c:23,f:0.3,fi:2.6,serving:'1 medium (118g)',servingG:118,vit:{vitC:9,potassium:358,vitB6:0.4,magnesium:27}},
+  {id:'blueberry',name:'Blueberries',cat:'fruits',cal:57,p:0.7,c:14,f:0.3,fi:2.4,serving:'1 cup (148g)',servingG:148,vit:{vitC:14,vitK:19,manganese:0.3}},
+  {id:'strawberry',name:'Strawberries',cat:'fruits',cal:32,p:0.7,c:7.7,f:0.3,fi:2,serving:'1 cup (152g)',servingG:152,vit:{vitC:89,folate:24,potassium:153}},
+  {id:'orange',name:'Orange',cat:'fruits',cal:47,p:0.9,c:12,f:0.1,fi:2.4,serving:'1 medium (131g)',servingG:131,vit:{vitC:70,folate:30,potassium:181,vitA:11}},
+  {id:'mango',name:'Mango',cat:'fruits',cal:60,p:0.8,c:15,f:0.4,fi:1.6,serving:'1 cup sliced (165g)',servingG:165,vit:{vitC:60,vitA:89,folate:43,vitB6:0.2}},
+  {id:'avocado',name:'Avocado',cat:'fruits',cal:160,p:2,c:9,f:15,fi:7,serving:'½ avocado (68g)',servingG:68,vit:{vitK:21,folate:81,potassium:485,vitE:2.1,vitB6:0.3}},
+  {id:'grapes',name:'Grapes',cat:'fruits',cal:69,p:0.7,c:18,f:0.2,fi:0.9,serving:'1 cup (92g)',servingG:92,vit:{vitC:10,vitK:14,potassium:176}},
+  {id:'raspberry',name:'Raspberries',cat:'fruits',cal:52,p:1.2,c:11.9,f:0.7,fi:6.5,serving:'1 cup (123g)',servingG:123,vit:{vitC:26.2,vitK:7.8,folate:21,manganese:0.8,potassium:186}},
+  {id:'lemon',name:'Lemon',cat:'fruits',cal:29,p:1.1,c:9.3,f:0.3,fi:2.8,serving:'1 medium (58g)',servingG:58,vit:{vitC:53,vitB6:0.1,folate:11,potassium:138,calcium:26}},
+  {id:'lime',name:'Lime',cat:'fruits',cal:30,p:0.7,c:10.5,f:0.2,fi:2.8,serving:'1 medium (67g)',servingG:67,vit:{vitC:29.1,calcium:33,potassium:102,folate:8}},
+  {id:'passionfruit',name:'Passionfruit',cat:'fruits',cal:97,p:2.2,c:23.4,f:0.7,fi:10.4,serving:'2 passionfruits (36g)',servingG:36,vit:{vitC:30,vitA:64,iron:1.6,potassium:348,magnesium:29,folate:14}},
+  {id:'spinach',name:'Spinach (raw)',cat:'vegetables',cal:23,p:2.9,c:3.6,f:0.4,fi:2.2,serving:'1 cup raw (30g)',servingG:30,vit:{vitK:483,vitA:469,vitC:28,folate:194,iron:2.7,calcium:99,magnesium:79}},
+  {id:'spinach_cooked',name:'Spinach (cooked/wilted)',cat:'vegetables',cal:23,p:3,c:3.8,f:0.4,fi:2.4,serving:'½ cup cooked (90g)',servingG:90,vit:{vitK:888,vitA:943,vitC:18,folate:131,iron:3.6,calcium:136,magnesium:87}},
+  {id:'broccoli',name:'Broccoli (raw)',cat:'vegetables',cal:34,p:2.8,c:7,f:0.4,fi:2.6,serving:'1 cup (91g)',servingG:91,vit:{vitC:89,vitK:102,folate:63,vitA:31,potassium:316,calcium:42}},
+  {id:'broccoli_steamed',name:'Broccoli (steamed, no oil)',cat:'vegetables',cal:35,p:2.4,c:7.2,f:0.4,fi:3.3,serving:'1 cup steamed (156g)',servingG:156,vit:{vitC:84,vitK:110,folate:84,vitA:60,calcium:62,potassium:457}},
+  {id:'broccoli_roasted',name:'Broccoli (roasted with oil)',cat:'vegetables',cal:90,p:3,c:8,f:5.5,fi:3.5,serving:'1 cup roasted (130g)',servingG:130,vit:{vitC:70,vitK:90,folate:60,vitA:50,calcium:50}},
+  {id:'carrot',name:'Carrot (raw)',cat:'vegetables',cal:41,p:0.9,c:10,f:0.2,fi:2.8,serving:'1 medium (61g)',servingG:61,vit:{vitA:835,vitK:13,vitC:6,potassium:320}},
+  {id:'carrot_steamed',name:'Carrot (steamed/pan, no oil)',cat:'vegetables',cal:35,p:0.8,c:8.2,f:0.1,fi:2.4,serving:'1 medium steamed (78g)',servingG:78,vit:{vitA:852,vitK:13,vitC:4,potassium:235}},
+  {id:'carrot_airfried',name:'Carrot (air fried with oil)',cat:'vegetables',cal:88,p:1,c:11,f:4.5,fi:2.6,serving:'1 medium air fried (78g)',servingG:78,vit:{vitA:820,vitK:12,vitC:3.5,potassium:220}},
+  {id:'sweetpotato_raw',name:'Sweet Potato (raw)',cat:'vegetables',cal:86,p:1.6,c:20,f:0.1,fi:3,serving:'1 medium raw (130g)',servingG:130,vit:{vitA:961,vitC:22,potassium:542,vitB6:0.3,manganese:0.3}},
+  {id:'sweetpotato_baked',name:'Sweet Potato (baked)',cat:'vegetables',cal:90,p:2,c:20.7,f:0.1,fi:3.3,serving:'1 medium baked (114g)',servingG:114,vit:{vitA:1096,vitC:19.6,potassium:475,vitB6:0.3,magnesium:27}},
+  {id:'capsicum',name:'Red Capsicum (raw)',cat:'vegetables',cal:31,p:1,c:6,f:0.3,fi:2.1,serving:'1 medium (119g)',servingG:119,vit:{vitC:190,vitA:157,vitB6:0.4,folate:46,potassium:251}},
+  {id:'capsicum_steamed',name:'Capsicum (steamed/pan, no oil)',cat:'vegetables',cal:28,p:0.9,c:6.1,f:0.2,fi:1.9,serving:'1 medium steamed (110g)',servingG:110,vit:{vitC:140,vitA:140,folate:38,potassium:230}},
+  {id:'capsicum_roasted',name:'Capsicum (roasted with oil)',cat:'vegetables',cal:82,p:1,c:6.5,f:5.9,fi:2,serving:'1 medium roasted (110g)',servingG:110,vit:{vitC:120,vitA:130,folate:30,potassium:210}},
+  {id:'tomato',name:'Tomato (raw)',cat:'vegetables',cal:18,p:0.9,c:3.9,f:0.2,fi:1.2,serving:'1 medium (123g)',servingG:123,vit:{vitC:23,vitK:10,vitA:42,potassium:292,folate:15}},
+  {id:'tomato_cooked',name:'Tomato (sautéed/cooked)',cat:'vegetables',cal:24,p:1.1,c:4.8,f:0.4,fi:1.4,serving:'½ cup cooked (120g)',servingG:120,vit:{vitC:19,vitK:8,vitA:55,potassium:396,folate:14}},
+  {id:'cucumber',name:'Cucumber',cat:'vegetables',cal:15,p:0.7,c:3.6,f:0.1,fi:0.5,serving:'½ cup sliced (52g)',servingG:52,vit:{vitK:16,vitC:3,potassium:147}},
+  {id:'kale',name:'Kale (raw)',cat:'vegetables',cal:49,p:4.3,c:9,f:0.9,fi:3.6,serving:'1 cup (67g)',servingG:67,vit:{vitK:817,vitA:885,vitC:120,calcium:150,iron:1.5,magnesium:34}},
+  {id:'kale_airfried',name:'Kale (air fried/crispy with oil)',cat:'vegetables',cal:188,p:6,c:16,f:11,fi:5.5,serving:'1 cup kale chips (30g)',servingG:30,vit:{vitK:410,vitA:450,vitC:60,calcium:75,iron:0.8}},
+  {id:'mushroom',name:'Mushrooms (raw)',cat:'vegetables',cal:22,p:3.1,c:3.3,f:0.3,fi:1,serving:'1 cup sliced (70g)',servingG:70,vit:{vitD:7,selenium:9,potassium:318,niacin:3.6}},
+  {id:'mushroom_fried',name:'Mushroom (fried in butter/oil)',cat:'vegetables',cal:151,p:3.8,c:3.8,f:13,fi:0.9,serving:'1 cup fried (70g)',servingG:70,vit:{vitD:6,niacin:4.8,potassium:310,selenium:8}},
+  {id:'onion',name:'Onion (raw)',cat:'vegetables',cal:40,p:1.1,c:9.3,f:0.1,fi:1.7,serving:'½ cup chopped (80g)',servingG:80,vit:{vitC:7,folate:15,potassium:146}},
+  {id:'onion_fried',name:'Onion (fried in oil)',cat:'vegetables',cal:150,p:1.2,c:14,f:10,fi:1.5,serving:'½ cup fried (80g)',servingG:80,vit:{vitC:4,potassium:120,folate:10}},
+  {id:'garlic',name:'Garlic',cat:'vegetables',cal:149,p:6.4,c:33,f:0.5,fi:2.1,serving:'1 clove (3g)',servingG:3,vit:{vitC:31,vitB6:1.2,manganese:1.7}},
+  {id:'lettuce',name:'Lettuce (raw)',cat:'vegetables',cal:15,p:1.4,c:2.9,f:0.2,fi:1.3,serving:'1 cup shredded (47g)',servingG:47,vit:{vitK:126,vitA:370,vitC:9.2,folate:64,potassium:194}},
+  {id:'potato_boiled',name:'Potato (boiled)',cat:'vegetables',cal:87,p:1.9,c:20.1,f:0.1,fi:1.8,serving:'1 medium (150g)',servingG:150,vit:{vitC:13,vitB6:0.3,potassium:379,folate:9,magnesium:22}},
+  {id:'potato_roasted',name:'Potato (roasted/air fryer, light oil)',cat:'vegetables',cal:149,p:2.5,c:22,f:5.7,fi:2,serving:'1 medium (150g)',servingG:150,vit:{vitC:10,vitB6:0.3,potassium:340,magnesium:20}},
+  {id:'potato_fried',name:'Potato (deep fried/chips)',cat:'vegetables',cal:312,p:3.4,c:41,f:15,fi:3.2,serving:'medium serve (150g)',servingG:150,vit:{vitC:9,potassium:579,vitB6:0.3}},
+  {id:'chickenbreast',name:'Chicken Breast (cooked)',cat:'meat',cal:165,p:31,c:0,f:3.6,fi:0,serving:'100g',servingG:100,vit:{vitB12:0.3,niacin:14.8,vitB6:1,selenium:27}},
+  {id:'chickenthigh',name:'Chicken Thigh (cooked, skin off)',cat:'meat',cal:179,p:24.8,c:0,f:8.8,fi:0,serving:'1 thigh (109g)',servingG:109,vit:{vitB12:0.3,niacin:6.5,vitB6:0.5,zinc:2.4,selenium:24,iron:1.1}},
+  {id:'chickenwing',name:'Chicken Wings (cooked)',cat:'meat',cal:203,p:30.5,c:0,f:8.1,fi:0,serving:'2 wings (60g)',servingG:60,vit:{niacin:7.8,vitB6:0.5,vitB12:0.3,zinc:2.1,selenium:20}},
+  {id:'salmoncooked',name:'Salmon (cooked)',cat:'meat',cal:208,p:20,c:0,f:13,fi:0,serving:'100g',servingG:100,vit:{vitD:14,vitB12:3.2,omega3:2260,vitB6:0.6,niacin:8,selenium:36}},
+  {id:'beef',name:'Lean Beef Mince (cooked)',cat:'meat',cal:215,p:26,c:0,f:12,fi:0,serving:'100g',servingG:100,vit:{vitB12:2.1,iron:2.6,zinc:5,niacin:5.4,vitB6:0.4,selenium:14}},
+  {id:'beefsirloin',name:'Beef Sirloin Steak (grilled)',cat:'meat',cal:207,p:28,c:0,f:10,fi:0,serving:'1 steak (170g)',servingG:170,vit:{vitB12:2.2,iron:2.4,zinc:5.5,niacin:7.8,vitB6:0.5,selenium:18}},
+  {id:'beefribeye',name:'Beef Ribeye Steak (grilled)',cat:'meat',cal:291,p:25,c:0,f:20,fi:0,serving:'1 steak (170g)',servingG:170,vit:{vitB12:2.0,iron:2.1,zinc:5.1,niacin:6.8,vitB6:0.4,selenium:16}},
+  {id:'lambchop',name:'Lamb Chops (grilled)',cat:'meat',cal:280,p:26,c:0,f:19,fi:0,serving:'1 chop (100g)',servingG:100,vit:{vitB12:2.4,iron:1.8,zinc:4.2,niacin:6.5,vitB6:0.2,selenium:14}},
+  {id:'lambmince',name:'Lamb Mince (cooked)',cat:'meat',cal:258,p:25.4,c:0,f:17,fi:0,serving:'100g',servingG:100,vit:{vitB12:2.1,iron:2.2,zinc:4.8,niacin:5.8,vitB6:0.2,selenium:12}},
+  {id:'lambleg',name:'Lamb Leg (roasted)',cat:'meat',cal:218,p:28.3,c:0,f:11,fi:0,serving:'100g',servingG:100,vit:{vitB12:2.8,iron:2.1,zinc:4.4,niacin:7.2,vitB6:0.3,selenium:16}},
+  {id:'tuna',name:'Tuna (canned in water)',cat:'meat',cal:116,p:26,c:0,f:1,fi:0,serving:'1 can (170g)',servingG:170,vit:{vitB12:2.5,niacin:13,vitD:4,selenium:78,potassium:301}},
+  {id:'shrimp',name:'Prawns/Shrimp (cooked)',cat:'meat',cal:99,p:24,c:0,f:0.3,fi:0,serving:'100g',servingG:100,vit:{vitB12:1.4,selenium:38,iron:0.5,zinc:1.6,niacin:2.6}},
+  {id:'sardine',name:'Sardines (canned)',cat:'meat',cal:208,p:25,c:0,f:11,fi:0,serving:'1 can (92g)',servingG:92,vit:{vitD:12,vitB12:8.9,calcium:382,omega3:2200,selenium:53}},
+  {id:'turkey',name:'Turkey Breast (cooked)',cat:'meat',cal:135,p:30,c:0,f:1,fi:0,serving:'100g',servingG:100,vit:{vitB12:1,niacin:11,vitB6:1.1,selenium:32,zinc:2.4}},
+  {id:'egg_boiled',name:'Egg (boiled)',cat:'dairy',cal:155,p:13,c:1.1,f:11,fi:0,serving:'1 large (50g)',servingG:50,vit:{vitD:2,vitB12:0.9,vitA:149,choline:294,selenium:15.4}},
+  {id:'egg_fried',name:'Egg (fried in oil/butter)',cat:'dairy',cal:196,p:13.6,c:0.8,f:14.8,fi:0,serving:'1 large fried (46g)',servingG:46,vit:{vitD:2,vitB12:0.9,vitA:155,choline:280,selenium:15}},
+  {id:'fullcreammilk',name:'Full Cream Milk',cat:'dairy',cal:61,p:3.2,c:4.8,f:3.3,fi:0,serving:'1 cup (250ml)',servingG:250,vit:{calcium:113,vitD:3,vitB12:0.9,vitA:46,potassium:132}},
+  {id:'litemilk',name:'Lite Milk (1.5% fat)',cat:'dairy',cal:47,p:3.4,c:4.9,f:1.5,fi:0,serving:'1 cup (250ml)',servingG:250,vit:{calcium:120,vitD:3,vitB12:1,vitA:40,potassium:150}},
+  {id:'greekyogurt',name:'Greek Yogurt (plain, full fat)',cat:'dairy',cal:97,p:9,c:3.6,f:5,fi:0,serving:'¾ cup (170g)',servingG:170,vit:{calcium:110,vitB12:0.8,potassium:141,selenium:9.7}},
+  {id:'cheese',name:'Cheddar Cheese',cat:'dairy',cal:403,p:25,c:1.3,f:33,fi:0,serving:'1 slice (28g)',servingG:28,vit:{calcium:721,vitA:264,vitB12:0.8,zinc:3.1}},
+  {id:'feta',name:'Feta Cheese',cat:'dairy',cal:264,p:14.2,c:4.1,f:21.3,fi:0,serving:'¼ cup crumbled (38g)',servingG:38,vit:{calcium:493,vitB12:1.7,vitA:125,zinc:2.9}},
+  {id:'gouda',name:'Gouda Cheese',cat:'dairy',cal:356,p:24.9,c:2.2,f:27.4,fi:0,serving:'1 slice (28g)',servingG:28,vit:{calcium:700,vitB12:1.5,vitA:183,zinc:3.9,vitK:2.5}},
+  {id:'cottage',name:'Cottage Cheese',cat:'dairy',cal:98,p:11,c:3.4,f:4.3,fi:0,serving:'½ cup (113g)',servingG:113,vit:{calcium:83,vitB12:0.4,selenium:10}},
+  {id:'butter',name:'Butter',cat:'dairy',cal:717,p:0.9,c:0.1,f:81,fi:0,serving:'1 tbsp (14g)',servingG:14,vit:{vitA:684,vitD:1.5,vitE:2.3,vitK:7}},
+  {id:'oats',name:'Rolled Oats (dry)',cat:'grains',cal:389,p:17,c:66,f:7,fi:11,serving:'½ cup dry (40g)',servingG:40,vit:{iron:4.7,magnesium:138,zinc:4,manganese:4.9,thiamin:0.8}},
+  {id:'oats_cooked',name:'Oats (cooked/porridge)',cat:'grains',cal:71,p:2.5,c:12,f:1.4,fi:1.7,serving:'1 cup cooked (234g)',servingG:234,vit:{iron:1.4,magnesium:26,zinc:1.1,thiamin:0.1}},
+  {id:'rice',name:'White Rice (cooked)',cat:'grains',cal:130,p:2.7,c:28,f:0.3,fi:0.4,serving:'1 cup cooked (186g)',servingG:186,vit:{folate:91,niacin:1.9,thiamin:0.2,iron:1.9}},
+  {id:'brownrice',name:'Brown Rice (cooked)',cat:'grains',cal:111,p:2.6,c:23,f:0.9,fi:1.8,serving:'1 cup cooked (195g)',servingG:195,vit:{magnesium:43,manganese:1.8,niacin:3,thiamin:0.2}},
+  {id:'pasta',name:'Pasta (cooked)',cat:'grains',cal:131,p:5,c:25,f:1.1,fi:1.8,serving:'1 cup cooked (140g)',servingG:140,vit:{folate:83,iron:1.8,niacin:1.8,selenium:26}},
+  {id:'whitebread',name:'White Bread',cat:'grains',cal:266,p:9,c:51,f:3.3,fi:2.7,serving:'1 slice (28g)',servingG:28,vit:{folate:91,iron:2.7,thiamin:0.5,niacin:4.4,calcium:77}},
+  {id:'bread',name:'Wholegrain Bread',cat:'grains',cal:247,p:13,c:41,f:4.2,fi:7,serving:'1 slice (28g)',servingG:28,vit:{iron:2.7,magnesium:76,folate:44,thiamin:0.4,niacin:5}},
+  {id:'wholemeal_bread',name:'Wholemeal Bread',cat:'grains',cal:247,p:10.7,c:43,f:3.4,fi:6.3,serving:'1 slice (28g)',servingG:28,vit:{iron:2.8,magnesium:82,folate:40,thiamin:0.4,zinc:1.5}},
+  {id:'chickpeas',name:'Chickpeas (cooked)',cat:'grains',cal:164,p:8.9,c:27,f:2.6,fi:7.6,serving:'½ cup (82g)',servingG:82,vit:{folate:141,iron:2.4,magnesium:48,zinc:1.3,potassium:291}},
+  {id:'lentils',name:'Lentils (cooked)',cat:'grains',cal:116,p:9,c:20,f:0.4,fi:7.9,serving:'½ cup (99g)',servingG:99,vit:{folate:179,iron:3.3,magnesium:36,potassium:365,zinc:1.3}},
+  {id:'blackbeans',name:'Black Beans (cooked)',cat:'grains',cal:132,p:8.9,c:24,f:0.5,fi:8.7,serving:'½ cup (86g)',servingG:86,vit:{folate:128,iron:1.8,magnesium:60,potassium:305,zinc:1}},
+  {id:'quinoa',name:'Quinoa (cooked)',cat:'grains',cal:120,p:4.4,c:21,f:1.9,fi:2.8,serving:'1 cup cooked (185g)',servingG:185,vit:{iron:1.5,magnesium:78,folate:78,zinc:1.1,manganese:1.2}},
+  {id:'almond',name:'Almonds (shelled)',cat:'nuts',cal:579,p:21,c:22,f:50,fi:12.5,serving:'¼ cup (35g)',servingG:35,vit:{vitE:25.6,magnesium:270,calcium:264,iron:3.7}},
+  {id:'walnut',name:'Walnuts (shelled)',cat:'nuts',cal:654,p:15,c:14,f:65,fi:6.7,serving:'¼ cup (30g)',servingG:30,vit:{omega3:2570,magnesium:158,vitE:0.7,folate:98}},
+  {id:'cashew',name:'Cashews (shelled)',cat:'nuts',cal:553,p:18,c:30,f:44,fi:3.3,serving:'¼ cup (35g)',servingG:35,vit:{magnesium:292,iron:6.7,zinc:5.8,vitK:34}},
+  {id:'pistachio',name:'Pistachios (shelled)',cat:'nuts',cal:562,p:20.2,c:27.5,f:45.3,fi:10.3,serving:'¼ cup shelled (31g)',servingG:31,vit:{vitB6:1.7,potassium:1025,iron:4,magnesium:121,vitE:2.9,folate:51,zinc:2.2}},
+  {id:'chia',name:'Chia Seeds',cat:'nuts',cal:486,p:17,c:42,f:31,fi:34,serving:'2 tbsp (28g)',servingG:28,vit:{calcium:631,magnesium:335,iron:7.7,omega3:17500,zinc:4.6}},
+  {id:'flaxseed',name:'Flaxseeds',cat:'nuts',cal:534,p:18,c:29,f:42,fi:27,serving:'2 tbsp (20g)',servingG:20,vit:{omega3:22800,magnesium:392,calcium:255,iron:5.7,potassium:813}},
+  {id:'pumpkinseed',name:'Pumpkin Seeds (shelled)',cat:'nuts',cal:559,p:30,c:11,f:49,fi:6,serving:'¼ cup (35g)',servingG:35,vit:{magnesium:592,zinc:7.8,iron:8.8,vitK:7}},
+  {id:'sunflower',name:'Sunflower Seeds (shelled)',cat:'nuts',cal:584,p:21,c:20,f:51,fi:8.6,serving:'¼ cup (35g)',servingG:35,vit:{vitE:35.2,magnesium:325,selenium:53,folate:227,vitB6:1.3}},
+  {id:'peanut',name:'Peanut Butter',cat:'nuts',cal:588,p:25,c:20,f:50,fi:6,serving:'2 tbsp (32g)',servingG:32,vit:{vitE:9,magnesium:168,niacin:13.1,folate:87,potassium:558}},
+];
+
+const VIT_DATA={
+  vitC:{name:'Vitamin C',group:'water',unit:'mg',daily:90,note:'Water-soluble antioxidant. Essential for immune function, collagen synthesis, iron absorption. Not stored — eat daily.',foods:['capsicum','strawberry','orange','broccoli','kale','tomato','mango','raspberry','capsicum_steamed']},
+  vitD:{name:'Vitamin D',group:'fat',unit:'µg',daily:15,note:'Fat-soluble. Essential for calcium absorption, bone health, immune function. Mainly from sun exposure.',foods:['salmoncooked','sardine','mushroom','fullcreammilk','egg_boiled','tuna','mushroom_fried']},
+  vitA:{name:'Vitamin A',group:'fat',unit:'µg RAE',daily:700,note:'Fat-soluble. Critical for vision, immune function, skin. Found as retinol (animal foods) and beta-carotene (plant foods).',foods:['kale','carrot','spinach','sweetpotato_baked','capsicum','orange','mango','egg_boiled']},
+  vitE:{name:'Vitamin E',group:'fat',unit:'mg',daily:15,note:'Fat-soluble antioxidant. Protects cell membranes. Found mainly in plant oils, nuts and seeds.',foods:['sunflower','almond','avocado','spinach','peanut','broccoli','pistachio']},
+  vitK:{name:'Vitamin K',group:'fat',unit:'µg',daily:120,note:'Fat-soluble. Essential for blood clotting and bone metabolism.',foods:['kale','spinach_cooked','broccoli_steamed','blueberry','avocado','egg_boiled','lettuce']},
+  vitB12:{name:'Vitamin B12',group:'water',unit:'µg',daily:2.4,note:'Only found naturally in animal products. Critical for nerve function and red blood cells. Vegans must supplement.',foods:['sardine','beef','tuna','salmoncooked','egg_boiled','fullcreammilk','greekyogurt','feta','lambleg']},
+  folate:{name:'Folate (B9)',group:'water',unit:'µg',daily:400,note:'Critical for DNA synthesis. Especially important in pregnancy.',foods:['spinach','lentils','chickpeas','blackbeans','broccoli','avocado','orange','raspberry','pistachio']},
+  iron:{name:'Iron',group:'mineral',unit:'mg',daily:18,note:'Heme iron (meat) is highly absorbed. Non-heme iron (plants) absorbs better with Vitamin C. Women need more.',foods:['pumpkinseed','chia','spinach_cooked','lentils','kale','beef','chickpeas','oats','flaxseed','pistachio']},
+  calcium:{name:'Calcium',group:'mineral',unit:'mg',daily:1000,note:'Critical for bones, teeth, muscle function. Absorbed better with Vitamin D.',foods:['fullcreammilk','cheese','feta','greekyogurt','kale','chia','spinach_cooked','almond','sardine','gouda']},
+  magnesium:{name:'Magnesium',group:'mineral',unit:'mg',daily:310,note:'Involved in 300+ enzyme reactions. Supports muscle and nerve function.',foods:['pumpkinseed','chia','almond','spinach','cashew','blackbeans','quinoa','oats','pistachio','flaxseed']},
+  zinc:{name:'Zinc',group:'mineral',unit:'mg',daily:8,note:'Essential for immune function, wound healing, protein synthesis.',foods:['pumpkinseed','beef','cashew','almond','lentils','chickpeas','oats','greekyogurt','lambchop','pistachio']},
+  potassium:{name:'Potassium',group:'mineral',unit:'mg',daily:3500,note:'Electrolyte essential for heart function and blood pressure regulation.',foods:['banana','sweetpotato_baked','spinach','lentils','avocado','flaxseed','capsicum','mushroom','pistachio','potato_boiled']},
+};
+
+const ZONES=[{id:'waist',label:'Natural waist'},{id:'lower-ab',label:'Lower abdominal'},{id:'hip',label:'Hip'},{id:'bust',label:'Bust'},{id:'glute',label:'Gluteal'},{id:'thigh',label:'Thigh'},{id:'calf',label:'Calf'},{id:'arm',label:'Upper arm'}];
+const EX_CONFIG={compound:{label:'Compound strength',protM:0.4,protDays:2,carbM:0.8},isolation:{label:'Isolation strength',protM:0.15,protDays:1,carbM:0.3},mixed:{label:'Mixed / full body',protM:0.25,protDays:2,carbM:0.6},cardio:{label:'Steady cardio',protM:0.1,protDays:1,carbM:1.2},hiit:{label:'HIIT / intense cardio',protM:0.2,protDays:1,carbM:1.5},steps:{label:'Steps',protM:0,protDays:0,carbM:0.2}};
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const COLOUR_GROUPS=[{id:'green',label:'Greens',desc:'Spinach, broccoli, kale, cucumber, peas',color:'#2da870'},{id:'red',label:'Reds & Oranges',desc:'Tomatoes, carrots, capsicum, oranges, mango',color:'#e84040'},{id:'purple',label:'Purples & Blues',desc:'Blueberries, eggplant, red cabbage, beetroot',color:'#7a30c0'},{id:'white',label:'Whites & Browns',desc:'Garlic, onion, mushrooms, wholegrains, legumes',color:'#8a7a6a'}];
+const DEFAULT_SUPPS=[{id:'creatine',name:'Creatine',note:'0 kcal — 3–5g daily'},{id:'vitd',name:'Vitamin D',note:'0 kcal'},{id:'magnesium',name:'Magnesium',note:'0 kcal'},{id:'fishoil',name:'Fish oil',note:'~9 kcal per 1g capsule'}];
+
+function getDefaultState(){return{profile:null,goals:{},todayFood:[],todayExercise:[],savedMeals:{},savedExercises:{},proteinBumps:{},carbBumps:{},calBurned:{},history:{},measurementHistory:[],netBalance:0,balanceMethod:null,dailyAdjustments:{},overageChosenToday:false,lastActiveDate:null,dayStatuses:{},supplements:DEFAULT_SUPPS.map(s=>({...s})),suppChecked:{},colourChecked:{},proteinUnderStreak:0,summaryShownToday:false};}
+let state=getDefaultState();
+let macroTargets={protein:120,carbs:200,fat:60,fibre:25};
+let nudgeShownToday={protein:false,fat:false,fibre:false,carbs:false};
+let pendingCalAdj='today',pendingProtAdj='today';
+let calViewDate=new Date();
+let selectedHistDate=null,editingDay=null;
+let editedDays=new Set();
+let pendingFoodEdit=null,pendingExEdit=null;
+let qtyMealIdx=null,qtyDayKey=null,foodModalDay=null,exModalDay=null;
+let missedDayQueue=[],currentMissedDay=null;
+let foodCat='all',macroFilter='protein',selectedVit='vitC';
+let compareA=null,compareB=null,comparePicking=null;
+let exploreAddFood=null,exploreAddTargetDay=null;
+let openFoodCard=null;
+
+function dateKey(offset=0){const d=new Date();d.setDate(d.getDate()+offset);return d.toISOString().split('T')[0];}
+function adjToOffset(adj){return adj==='today'?0:adj==='tomorrow'?1:2;}
+function formatDateLabel(k){const[y,m,d]=k.split('-');return new Date(+y,+m-1,+d).toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+function getDaysUntilSunday(){const d=new Date().getDay();return d===0?0:7-d;}
+function shiftKey(baseKey,offset){const d=new Date(baseKey);d.setDate(d.getDate()+offset);return d.toISOString().split('T')[0];}
+function getHour(){return new Date().getHours();}
+function daysBetween(k1,k2){return Math.round((new Date(k2)-new Date(k1))/(864e5));}
+
+function checkMidnightReset(){
+  const today=dateKey(0);const last=state.lastActiveDate;
+  if(last&&last!==today){
+    const missed=daysBetween(last,today);snapshotDay(last);
+    if(missed>=7){performStartFresh(false);showMissedDaysBanner(true);}
+    else{missedDayQueue=[];for(let i=missed-1;i>=1;i--){const k=shiftKey(today,-i);if(!state.history[k]?.food?.length&&!state.dayStatuses[k])missedDayQueue.push(k);}}
+    if(!state.overageChosenToday&&state.netBalance>0){state.netBalance=0;state.balanceMethod=null;}
+    state.todayFood=[];state.todayExercise=[];state.overageChosenToday=false;state.summaryShownToday=false;
+    nudgeShownToday={protein:false,fat:false,fibre:false,carbs:false};
+  }
+  state.lastActiveDate=today;
+}
+function snapshotToday(){snapshotDay(dateKey(0));}
+function snapshotDay(k){if(!state.history)state.history={};const isToday=k===dateKey(0);const food=isToday?state.todayFood:(state.history[k]?.food||[]);const exercise=isToday?state.todayExercise:(state.history[k]?.exercise||[]);state.history[k]={food:[...food.map(f=>({...f}))],exercise:[...exercise.map(e=>({...e}))],calBurned:state.calBurned[k]||0,proteinBump:state.proteinBumps[k]||0,carbBump:state.carbBumps[k]||0,adjustment:state.dailyAdjustments[k]||0};}
+function showMissedDaysBanner(isAuto){const b=document.getElementById('missed-days-banner');b.style.display='block';b.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--amber);margin-bottom:5px">${isAuto?'🌱 Welcome back!':'📅 Missed days'}</div><div style="font-size:12px;color:var(--gray)">History preserved. Tap any date to edit.</div>`;}
+
+function runDailyPrompts(){if(missedDayQueue.length>0){currentMissedDay=missedDayQueue.shift();showMissedDayPrompt(currentMissedDay);return;}if(!state.summaryShownToday){showDailySummary();return;}}
+function showMissedDayPrompt(k){document.getElementById('missed-title').textContent=`Missed day — ${formatDateLabel(k)}`;document.getElementById('missed-sub').textContent='Looks like you didn\'t log anything. What happened?';document.getElementById('modal-missed').classList.add('show');}
+function handleMissed(choice){closeModal('modal-missed');const k=currentMissedDay;if(choice==='exact'){state.dayStatuses[k]='logged';goTo('history');selectedHistDate=k;calViewDate=new Date(k);renderCalendar();editingDay=k;renderHistoryPanel(k);document.getElementById('history-panel').classList.add('open');}else if(choice==='estimate'){state.dayStatuses[k]='estimated';goTo('history');selectedHistDate=k;calViewDate=new Date(k);renderCalendar();editingDay=k;renderHistoryPanel(k);document.getElementById('history-panel').classList.add('open');}else if(choice==='fasting'){state.dayStatuses[k]='fasting';document.getElementById('fasting-date-label').textContent=formatDateLabel(k);document.getElementById('fasting-cals').value='';document.getElementById('modal-fasting').classList.add('show');}else if(choice==='skip'){state.dayStatuses[k]='skipped';if(!state.history[k])state.history[k]={food:[],exercise:[],calBurned:0,proteinBump:0,carbBump:0,adjustment:0};state.history[k].skipped=true;save();nextMissedDay();}else if(choice==='fresh'){performStartFresh(false);nextMissedDay();}}
+function submitFasting(){const cals=parseFloat(document.getElementById('fasting-cals').value)||0;const k=currentMissedDay;if(!state.history[k])state.history[k]={food:[],exercise:[],calBurned:0,proteinBump:0,carbBump:0,adjustment:0};state.history[k].food=[{name:'Estimated intake (fasting day)',cals,protein:0,carbs:0,fat:0,fibre:0}];editedDays.add(k);snapshotDay(k);save();closeModal('modal-fasting');nextMissedDay();}
+function nextMissedDay(){if(missedDayQueue.length>0){currentMissedDay=missedDayQueue.shift();showMissedDayPrompt(currentMissedDay);}else{currentMissedDay=null;if(!state.summaryShownToday)showDailySummary();}}
+
+function showDailySummary(){
+  const yk=dateKey(-1);const h=state.history[yk];state.summaryShownToday=true;save();
+  if(!h||h.skipped)return;
+  calcTargets();
+  const yTarget=getDayTarget(yk);const yEaten=Math.round((h.food||[]).reduce((s,f)=>s+(f.cals||0),0));
+  const yProt=Math.round((h.food||[]).reduce((s,f)=>s+(f.protein||0),0)*10)/10;
+  const yCarbs=Math.round((h.food||[]).reduce((s,f)=>s+(f.carbs||0),0)*10)/10;
+  const yFat=Math.round((h.food||[]).reduce((s,f)=>s+(f.fat||0),0)*10)/10;
+  const yFibre=Math.round((h.food||[]).reduce((s,f)=>s+(f.fibre||0),0)*10)/10;
+  const calDiff=yTarget-yEaten;
+  const protPct=macroTargets.protein>0?yProt/macroTargets.protein:1;
+  if(protPct<0.8)state.proteinUnderStreak=(state.proteinUnderStreak||0)+1;else state.proteinUnderStreak=0;save();
+  const rows=[];
+  if(calDiff>=0)rows.push({label:'Calories',val:`${yEaten} / ${yTarget} kcal`,cls:(state.calMode==='surplus')?'report-warn':'report-good',note:'Under target ✓'});
+  else rows.push({label:'Calories',val:`${yEaten} / ${yTarget} kcal`,cls:'report-bad',note:`${Math.abs(calDiff)} kcal over`});
+  rows.push({label:'Protein',val:`${yProt}g / ${macroTargets.protein}g`,cls:protPct>=0.8?'report-good':'report-bad',note:protPct>=0.8?'Hit target ✓':`Under (${Math.round(protPct*100)}%)`});
+  rows.push({label:'Carbs',val:`${yCarbs}g / ${macroTargets.carbs}g`,cls:yCarbs/macroTargets.carbs>1?'report-warn':'report-good',note:yCarbs/macroTargets.carbs>1?'Over target':'OK ✓'});
+  rows.push({label:'Fat',val:`${yFat}g / ${macroTargets.fat}g`,cls:yFat/macroTargets.fat<0.6?'report-warn':yFat/macroTargets.fat>1.2?'report-warn':'report-good',note:yFat/macroTargets.fat<0.6?'Quite low':'OK ✓'});
+  rows.push({label:'Fibre',val:`${yFibre}g / 25g`,cls:yFibre/25>1?'report-good':yFibre/25>=0.6?'report-good':'report-warn',note:yFibre/25>1?'Exceeded 🎉':'OK ✓'});
+  let impact='';
+  if(calDiff>50){impact=`${calDiff} kcal under yesterday. `;state.netBalance=-calDiff;}
+  else if(calDiff<-50){impact=`${Math.abs(calDiff)} kcal over yesterday. `;state.netBalance=Math.abs(calDiff);}
+  else impact='Hit your target — great consistency! ';
+  if(state.proteinUnderStreak>=3)impact+=`⚠️ Low on protein for ${state.proteinUnderStreak} days in a row.`;
+  document.getElementById('summary-title').textContent='Yesterday\'s report 📊';
+  document.getElementById('summary-date').textContent=formatDateLabel(yk);
+  document.getElementById('summary-rows').innerHTML=rows.map(r=>`<div class="report-row"><span class="report-label">${r.label}</span><div style="text-align:right"><div class="report-val ${r.cls}">${r.val}</div><div style="font-size:10px;color:var(--gray)">${r.note}</div></div></div>`).join('');
+  document.getElementById('summary-impact').innerHTML=`<strong>Effect on today:</strong> ${impact}`;
+  document.getElementById('modal-summary').classList.add('show');
+}
+function closeSummary(){closeModal('modal-summary');if(state.netBalance>50&&!state.overageChosenToday)showOveragePrompt(Math.round(state.netBalance),true);else if(state.netBalance<-50){document.getElementById('credit-sub').textContent=`${Math.round(Math.abs(state.netBalance))} kcal under yesterday. What would you like to do?`;document.getElementById('modal-credit').classList.add('show');}}
+
+function getDayTarget(k){return Math.round((state.tdee||2000)+(state.dailyAdjustments[k]||0)+(state.calBurned[k]||0));}
+function getTodayCalTarget(){return getDayTarget(dateKey(0));}
+function getTodayEaten(){return Math.round(state.todayFood.reduce((s,f)=>s+(f.cals||0),0));}
+function getTodayBurned(){return Math.round(state.calBurned[dateKey(0)]||0);}
+function getMacroEaten(m){return Math.round(state.todayFood.reduce((s,f)=>s+(f[m]||0),0)*10)/10;}
+function getTodayProteinTarget(){return Math.round(macroTargets.protein+(state.proteinBumps[dateKey(0)]||0));}
+function getTodayCarbTarget(){const adj=state.dailyAdjustments[dateKey(0)]||0;return Math.round(macroTargets.carbs+(state.carbBumps[dateKey(0)]||0)+Math.round((adj*0.4)/4));}
+function getTodayFatTarget(){return Math.round(macroTargets.fat+Math.round(((state.dailyAdjustments[dateKey(0)]||0)*0.3)/9));}
+function getDayEaten(k){const isToday=k===dateKey(0);const food=isToday?state.todayFood:(state.history[k]?.food||[]);return Math.round(food.reduce((s,f)=>s+(f.cals||0),0));}
+function checkOverage(){if(state.overageChosenToday)return;const ov=getTodayEaten()-getTodayCalTarget();if(ov>0){state.netBalance=ov;showOveragePrompt(ov,false);}}
+function showOveragePrompt(amount,isRecal){document.getElementById('overage-title').textContent=isRecal?`Net ${amount} kcal over 🍕`:`You're ${amount} kcal over today 🍕`;document.getElementById('overage-sub').textContent=isRecal?'How do you want to handle it?':`Target was ${getTodayCalTarget()} kcal.`;const dLeft=getDaysUntilSunday();document.getElementById('splitweek-sub').textContent=dLeft>0?`~${Math.round(amount/dLeft)} kcal/day until Sunday`:'Try split 7';document.getElementById('modal-overage').classList.add('show');}
+function handleOverage(method){closeModal('modal-overage');state.overageChosenToday=true;state.balanceMethod=method;if(method==='forget'){state.netBalance=0;state.balanceMethod=null;}else recalcDailyAdjustments();save();renderDashboard();}
+function recalcDailyAdjustments(){if(!state.balanceMethod||state.netBalance===0)return;const bal=state.netBalance;if(state.balanceMethod==='carryover')state.dailyAdjustments[dateKey(1)]=(state.dailyAdjustments[dateKey(1)]||0)-bal;else if(state.balanceMethod==='splitweek'){const days=getDaysUntilSunday();if(!days)return;const per=Math.round(bal/days);for(let i=1;i<=days;i++){const k=dateKey(i);state.dailyAdjustments[k]=(state.dailyAdjustments[k]||0)-per;}}else if(state.balanceMethod==='split7'){const per=Math.round(bal/7);for(let i=1;i<=7;i++){const k=dateKey(i);state.dailyAdjustments[k]=(state.dailyAdjustments[k]||0)-per;}}}
+function handleCredit(method){closeModal('modal-credit');const credit=Math.abs(state.netBalance);if(method==='today')state.dailyAdjustments[dateKey(0)]=(state.dailyAdjustments[dateKey(0)]||0)+credit;else if(method==='splitweek'){const days=getDaysUntilSunday()+1;const per=Math.round(credit/Math.max(1,days));for(let i=0;i<days;i++){const k=dateKey(i);state.dailyAdjustments[k]=(state.dailyAdjustments[k]||0)+per;}}else if(method==='split7'){const per=Math.round(credit/7);for(let i=0;i<7;i++){const k=dateKey(i);state.dailyAdjustments[k]=(state.dailyAdjustments[k]||0)+per;}}state.netBalance=0;state.balanceMethod=null;save();renderDashboard();}
+function triggerRecalibrate(){let netBal=0;editedDays.forEach(k=>{netBal+=(getDayEaten(k)-getDayTarget(k));});editedDays.clear();document.getElementById('recal-banner').style.display='none';if(Math.abs(netBal)<10){renderCalendar();return;}state.netBalance=netBal;if(netBal>0)showOveragePrompt(Math.round(netBal),true);else{document.getElementById('credit-sub').textContent=`Net credit of ${Math.round(Math.abs(netBal))} kcal. What would you like to do?`;document.getElementById('modal-credit').classList.add('show');}renderCalendar();}
+
+function checkMacroNudges(){if(getHour()<18)return;const pt=getTodayProteinTarget(),pe=getMacroEaten('protein');const ft=getTodayFatTarget(),fe=getMacroEaten('fat');const fie=getMacroEaten('fibre');const ct=getTodayCarbTarget(),ce=getMacroEaten('carbs');const mode=state.calMode||'maintenance';if(!nudgeShownToday.protein&&pe/pt<0.8){nudgeShownToday.protein=true;showNudge('Low on protein 💪',state.proteinUnderStreak>=2?`${state.proteinUnderStreak+1} days low on protein. Your muscles need it — try to hit ${pt}g today.`:`You've had ${pe}g protein — target is ${pt}g.`);return;}if(!nudgeShownToday.fat&&fe/ft<0.6){nudgeShownToday.fat=true;showNudge('Low on fat 🥑',`${fe}g fat so far — target is ${ft}g. Fat is essential for hormones and brain function.`);return;}if(!nudgeShownToday.fibre&&fie/25<0.6){nudgeShownToday.fibre=true;showNudge('Low on fibre 🥦',`${fie}g fibre so far — target is 25g. Try vegetables, legumes, or wholegrains.`);return;}if(!nudgeShownToday.carbs&&(mode==='surplus'||mode==='maintenance')&&ce/ct<0.6){nudgeShownToday.carbs=true;showNudge('Low on carbs 🍚',`${ce}g carbs so far — target is ${ct}g. Carbs fuel your workouts and recovery.`);return;}}
+function showNudge(title,body){document.getElementById('nudge-title').textContent=title;document.getElementById('nudge-body').textContent=body;document.getElementById('modal-nudge').classList.add('show');}
+
+function getSuppCheckedToday(){if(!state.suppChecked[dateKey(0)])state.suppChecked[dateKey(0)]={};return state.suppChecked[dateKey(0)];}
+function getColourCheckedToday(){if(!state.colourChecked[dateKey(0)])state.colourChecked[dateKey(0)]={};return state.colourChecked[dateKey(0)];}
+function toggleSupp(id){const c=getSuppCheckedToday();c[id]=!c[id];save();renderSuppChecklist();}
+function toggleColour(id){const c=getColourCheckedToday();c[id]=!c[id];save();renderColourChecklist();}
+function renderSuppChecklist(){const c=document.getElementById('supp-checklist');const supps=state.supplements||DEFAULT_SUPPS;if(!supps.length){c.innerHTML='<div class="empty-state" style="padding:8px 0">No supplements added</div>';return;}const checked=getSuppCheckedToday();c.innerHTML=supps.map(s=>`<div class="supp-item"><div class="supp-check ${checked[s.id]?'checked':''}" onclick="toggleSupp('${s.id}')">${checked[s.id]?'✓':''}</div><div style="flex:1"><div class="supp-name">${s.name}</div>${s.note?`<div class="supp-note">${s.note}</div>`:''}</div></div>`).join('');}
+function renderColourChecklist(){const c=document.getElementById('colour-checklist');const checked=getColourCheckedToday();c.innerHTML=COLOUR_GROUPS.map(g=>`<div class="colour-group"><div class="colour-dot" style="background:${g.color}"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">${g.label}</div><div style="font-size:11px;color:var(--gray)">${g.desc}</div></div><div class="colour-check ${checked[g.id]?'checked':''}" onclick="toggleColour('${g.id}')">${checked[g.id]?'✓':''}</div></div>`).join('');}
+function openSuppModal(){renderSuppManageList();document.getElementById('modal-supp').classList.add('show');}
+function renderSuppManageList(){const c=document.getElementById('supp-manage-list');const supps=state.supplements||[];c.innerHTML=supps.map((s,i)=>`<div class="meal-row"><div style="flex:1"><div style="font-size:13px;font-weight:500">${s.name}</div>${s.note?`<div style="font-size:11px;color:var(--gray)">${s.note}</div>`:''}</div><button class="log-del" onclick="deleteSupp(${i})">×</button></div>`).join('');}
+function addSupplement(){const name=document.getElementById('supp-new-name').value.trim();if(!name)return;const note=document.getElementById('supp-new-note').value.trim();const id='s'+Date.now();if(!state.supplements)state.supplements=[];state.supplements.push({id,name,note});save();document.getElementById('supp-new-name').value='';document.getElementById('supp-new-note').value='';renderSuppManageList();renderSuppChecklist();}
+function deleteSupp(i){state.supplements.splice(i,1);save();renderSuppManageList();renderSuppChecklist();}
+
+function goTo(s){document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('screen-'+s).classList.add('active');document.getElementById('nav-'+s).classList.add('active');if(s==='home'){renderDashboard();checkMacroNudges();}if(s==='history'){calViewDate=new Date();renderCalendar();}if(s==='meals'){renderSavedMealsList();renderSavedExList();}if(s==='explore')initExplore();if(s==='profile')loadProfileForm();}
+
+function initExplore(){switchExploreSection('food',document.querySelector('#explore-main-tabs .explore-tab'));}
+function switchExploreSection(sec,btn){['food','macro','vitamin','compare'].forEach(s=>document.getElementById('explore-'+s).style.display='none');document.getElementById('explore-'+sec).style.display='block';document.querySelectorAll('#explore-main-tabs .explore-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');if(sec==='food')renderFoodExplorer();if(sec==='macro')renderMacroGuide();if(sec==='vitamin')renderVitaminGuide();if(sec==='compare')renderCompare();}
+function setFoodCat(cat,btn){foodCat=cat;openFoodCard=null;document.querySelectorAll('#food-cat-tabs .explore-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderFoodExplorer();}
+function renderFoodExplorer(){const q=document.getElementById('food-search').value.toLowerCase();const list=FOODS.filter(f=>(foodCat==='all'||f.cat===foodCat)&&(!q||f.name.toLowerCase().includes(q)));const c=document.getElementById('food-explorer-list');if(!list.length){c.innerHTML='<div class="empty-state">No foods found</div>';return;}c.innerHTML=list.map(f=>{const isOpen=openFoodCard===f.id;const vitKeys=Object.keys(f.vit||{});return`<div class="food-card" id="fcard-${f.id}"><div class="food-card-header" onclick="toggleFoodCard('${f.id}')"><div><div class="food-card-name">${f.name}</div><div class="food-card-sub">per 100g</div></div><div style="text-align:right"><div class="food-card-cals">${f.cal} kcal</div><div style="font-size:10px;color:var(--gray)">${isOpen?'▲':'▼'}</div></div></div><div class="food-card-body ${isOpen?'open':''}"><div class="food-serving">Typical serving: ${f.serving}</div><div class="food-macro-grid"><div class="food-macro"><div class="fmv" style="color:var(--pink)">${f.p}g</div><div class="fml">Protein</div></div><div class="food-macro"><div class="fmv" style="color:var(--amber)">${f.c}g</div><div class="fml">Carbs</div></div><div class="food-macro"><div class="fmv" style="color:var(--purple)">${f.f}g</div><div class="fml">Fat</div></div><div class="food-macro"><div class="fmv" style="color:var(--green)">${f.fi}g</div><div class="fml">Fibre</div></div></div>${vitKeys.length?`<div class="food-vit">🌿 ${vitKeys.map(k=>{const vd=VIT_DATA[k];return vd?`${vd.name}: ${f.vit[k]}${vd.unit}`:`${k}: ${f.vit[k]}`;}).join(' · ')}</div>`:''}<button class="btn btn-primary" style="font-size:13px;padding:9px" onclick="event.stopPropagation();openExploreAdd('${f.id}')">+ Add to today</button></div></div>`;}).join('');}
+function toggleFoodCard(id){openFoodCard=openFoodCard===id?null:id;renderFoodExplorer();}
+function openExploreAdd(id,targetDay){const f=FOODS.find(x=>x.id===id);if(!f)return;exploreAddFood=f;exploreAddTargetDay=targetDay||dateKey(0);document.getElementById('explore-add-title').textContent='Add '+f.name;document.getElementById('explore-add-info').innerHTML=`Per 100g: ${f.cal} kcal · ${f.p}g protein · ${f.c}g carbs · ${f.f}g fat · ${f.fi}g fibre`;document.getElementById('explore-add-hint').textContent=`Typical serving: ${f.serving}`;document.getElementById('explore-add-grams').value='';document.getElementById('explore-add-preview').textContent='Enter grams to see calculated values';document.getElementById('modal-explore-add').classList.add('show');}
+function confirmExploreAdd(){const g=parseFloat(document.getElementById('explore-add-grams').value)||0;if(!g){alert('Please enter how many grams you had.');return;}const f=exploreAddFood;const r=v=>Math.round(v*g/100*10)/10;const entry={name:`${f.name} (${g}g)`,cals:r(f.cal),protein:r(f.p),carbs:r(f.c),fat:r(f.f),fibre:r(f.fi)};const k=exploreAddTargetDay||dateKey(0);const isToday=k===dateKey(0);if(isToday)state.todayFood.push(entry);else{if(!state.history[k])state.history[k]={food:[],exercise:[],calBurned:0,proteinBump:0,carbBump:0,adjustment:0};state.history[k].food.push(entry);editedDays.add(k);snapshotDay(k);}save();closeModal('modal-explore-add');if(isToday){renderDashboard();checkOverage();}else{renderHistoryPanel(k);renderCalendar();}exploreAddFood=null;exploreAddTargetDay=null;}
+function switchFoodTab(t){document.getElementById('food-tab-manual').style.display=t==='manual'?'block':'none';document.getElementById('food-tab-saved').style.display=t==='saved'?'block':'none';document.getElementById('food-tab-explore').style.display=t==='explore'?'block':'none';const tabMap={manual:'tab-manual',saved:'tab-saved-meals',explore:'tab-explore-food'};Object.entries(tabMap).forEach(([key,id])=>{const el=document.getElementById(id);if(!el)return;el.style.background=t===key?'var(--pink)':'#fff';el.style.color=t===key?'#fff':'var(--gray)';});if(t==='saved')renderModalSavedList();if(t==='explore'){document.getElementById('modal-explore-search').value='';renderModalExploreList();}}
+function renderModalExploreList(){const q=document.getElementById('modal-explore-search').value.toLowerCase().trim();const c=document.getElementById('modal-explore-list');if(!q){c.innerHTML='<div class="empty-state">Start typing to search</div>';return;}const list=FOODS.filter(f=>f.name.toLowerCase().includes(q));if(!list.length){c.innerHTML='<div class="empty-state">No foods found</div>';return;}const day=foodModalDay||dateKey(0);c.innerHTML=list.map(f=>`<div class="meal-row"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">${f.name}</div><div style="font-size:11px;color:var(--gray)">${f.cal} kcal · ${f.p}g P · ${f.c}g C · ${f.f}g F per 100g</div><div style="font-size:10px;color:var(--gray)">Serving: ${f.serving}</div></div><button class="btn-sm btn-pink-sm" onclick="closeModal('modal-food');openExploreAdd('${f.id}','${day}')">Add</button></div>`).join('');}
+function setMacroFilter(filter,btn){macroFilter=filter;document.querySelectorAll('#explore-macro .explore-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderMacroGuide();}
+function renderMacroGuide(){const c=document.getElementById('macro-guide-list');const filterCfg={protein:{field:'p',label:'Protein',unit:'g P',title:'High Protein Foods',lowerBetter:false},carbs:{field:'c',label:'Carbs',unit:'g C',title:'High Carb Foods',lowerBetter:false},fat:{field:'f',label:'Fat',unit:'g F',title:'High Fat Foods',lowerBetter:false},fibre:{field:'fi',label:'Fibre',unit:'g Fi',title:'High Fibre Foods',lowerBetter:false},lowcal:{field:'cal',label:'Calories',unit:'kcal',title:'Low Calorie & Filling Foods',lowerBetter:true}};const cfg=filterCfg[macroFilter];let sorted=[...FOODS].sort((a,b)=>cfg.lowerBetter?(a[cfg.field]-b[cfg.field]):(b[cfg.field]-a[cfg.field]));sorted=sorted.slice(0,20);c.innerHTML=`<div class="macro-section"><div class="macro-section-title">${cfg.title}</div><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray);padding:4px 0;border-bottom:1px solid #f0ede8;margin-bottom:4px"><span>Food (per 100g)</span><span>${cfg.label} · Calories</span></div>${sorted.map((f,i)=>{const isEfficientProtein=macroFilter==='protein'&&f.p>=15&&f.cal<=200;const isCleanCarb=macroFilter==='carbs'&&f.c>=15&&f.f<=3;const isLowCarbFat=macroFilter==='fat'&&f.f>=10&&f.c<=5;const isFillingLight=macroFilter==='fibre'&&f.fi>=4&&f.cal<=100;const isHighFibre=macroFilter==='lowcal'&&f.fi>=3;let badge='';if(isEfficientProtein)badge='<span style="font-size:9px;background:#eaf7f0;color:var(--green);border-radius:4px;padding:1px 5px;font-weight:600;vertical-align:middle">⭐ High P · Low Cal</span>';else if(isCleanCarb)badge='<span style="font-size:9px;background:#fff3e0;color:#b85c00;border-radius:4px;padding:1px 5px;font-weight:600;vertical-align:middle">🌾 Clean Carb</span>';else if(isLowCarbFat)badge='<span style="font-size:9px;background:#fce8ef;color:var(--pink-dark);border-radius:4px;padding:1px 5px;font-weight:600;vertical-align:middle">🥑 Low Carb Fat</span>';else if(isFillingLight)badge='<span style="font-size:9px;background:#eaf7f0;color:#1a6040;border-radius:4px;padding:1px 5px;font-weight:600;vertical-align:middle">🌿 Filling & Light</span>';else if(isHighFibre)badge='<span style="font-size:9px;background:#f0e8fe;color:var(--purple);border-radius:4px;padding:1px 5px;font-weight:600;vertical-align:middle">💪 High Fibre</span>';return`<div class="macro-rank-item" style="align-items:flex-start"><div style="flex:1;min-width:0"><div class="macro-rank-name">${i+1}. ${f.name} ${badge}</div><div style="font-size:10px;color:var(--gray)">Serving: ${f.serving}</div></div><div style="text-align:right;flex-shrink:0;margin-left:8px"><div style="font-size:12px;font-weight:700;color:var(--pink)">${f[cfg.field]} ${cfg.unit}</div><div style="font-size:10px;color:var(--gray)">${f.cal} kcal/100g</div></div></div>`;}).join('')}</div>`;}
+function renderVitaminGuide(){const groups={fat:'Fat-soluble vitamins',water:'Water-soluble vitamins',mineral:'Key minerals'};let html='';Object.entries(groups).forEach(([g,label])=>{html+=`<div class="vit-group-title">${label}</div>`;Object.entries(VIT_DATA).filter(([k,v])=>v.group===g).forEach(([k,v])=>{html+=`<span class="vit-chip ${selectedVit===k?'active':''}" onclick="selectVit('${k}')">${v.name}</span>`;});});document.getElementById('vit-chips').innerHTML=html;renderVitDetail();}
+function selectVit(id){selectedVit=id;renderVitaminGuide();}
+function renderVitDetail(){const vd=VIT_DATA[selectedVit];if(!vd){document.getElementById('vit-detail').innerHTML='';return;}const foods=vd.foods.map(id=>FOODS.find(f=>f.id===id)).filter(Boolean);foods.sort((a,b)=>(b.vit[selectedVit]||0)-(a.vit[selectedVit]||0));document.getElementById('vit-detail').innerHTML=`<div style="margin-top:12px"><div style="font-size:15px;font-weight:700;margin-bottom:6px;color:var(--purple)">${vd.name}</div><div class="vit-note">${vd.note} Daily target: ~${vd.daily}${vd.unit}.</div><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray);padding:4px 0;border-bottom:1px solid #f0ede8;margin-bottom:4px"><span>Food</span><span>per 100g · per serving</span></div>${foods.map((f,i)=>{const per100=f.vit[selectedVit]||0;const perServing=Math.round(per100*(f.servingG/100)*10)/10;const pct100=Math.round((per100/vd.daily)*100);const pctServing=Math.round((perServing/vd.daily)*100);return`<div class="macro-rank-item" style="align-items:flex-start"><div style="flex:1;min-width:0"><div class="macro-rank-name">${i+1}. ${f.name}</div><div style="font-size:10px;color:var(--gray)">Serving: ${f.serving}</div></div><div style="text-align:right;flex-shrink:0;margin-left:8px"><div style="font-size:12px;font-weight:700;color:var(--purple)">${per100}${vd.unit} <span style="font-size:9px;color:var(--gray);font-weight:400">/100g (${pct100}% DV)</span></div><div style="font-size:11px;color:var(--green);font-weight:600">${perServing}${vd.unit} <span style="font-size:9px;color:var(--gray);font-weight:400">per serving (${pctServing}% DV)</span></div></div></div>`;}).join('')}</div>`;}
+function renderCompare(){const sa=document.getElementById('compare-slot-a');const sb=document.getElementById('compare-slot-b');if(compareA){sa.className='compare-slot filled';sa.innerHTML=`<div style="font-size:11px;color:var(--green);margin-bottom:3px">Food A</div><div style="font-size:14px;font-weight:600">${compareA.name}</div><div style="font-size:11px;color:var(--gray)">${compareA.cal} kcal/100g</div><button class="btn-sm btn-gray-sm" style="margin-top:6px;font-size:10px" onclick="compareA=null;renderCompare()">Change</button>`;sa.onclick=null;}else{sa.className='compare-slot';sa.innerHTML='<div style="font-size:11px;color:var(--gray)">Food A</div><div style="font-size:13px;color:var(--pink);margin-top:4px">Tap to choose</div>';sa.onclick=()=>openComparePicker('a');}if(compareB){sb.className='compare-slot filled';sb.innerHTML=`<div style="font-size:11px;color:var(--green);margin-bottom:3px">Food B</div><div style="font-size:14px;font-weight:600">${compareB.name}</div><div style="font-size:11px;color:var(--gray)">${compareB.cal} kcal/100g</div><button class="btn-sm btn-gray-sm" style="margin-top:6px;font-size:10px" onclick="compareB=null;renderCompare()">Change</button>`;sb.onclick=null;}else{sb.className='compare-slot';sb.innerHTML='<div style="font-size:11px;color:var(--gray)">Food B</div><div style="font-size:13px;color:var(--pink);margin-top:4px">Tap to choose</div>';sb.onclick=()=>openComparePicker('b');}const r=document.getElementById('compare-result');if(!compareA||!compareB){r.innerHTML='<div class="empty-state">Pick two foods to compare</div>';return;}const rows=[{label:'Calories',ka:'cal',kb:'cal',unit:'kcal',lowerBetter:true},{label:'Protein',ka:'p',kb:'p',unit:'g',lowerBetter:false},{label:'Carbs',ka:'c',kb:'c',unit:'g',lowerBetter:false},{label:'Fat',ka:'f',kb:'f',unit:'g',lowerBetter:false},{label:'Fibre',ka:'fi',kb:'fi',unit:'g',lowerBetter:false}];const sharedVits=Object.keys(compareA.vit||{}).filter(k=>compareB.vit&&compareB.vit[k]!==undefined);r.innerHTML=`<div style="display:flex;gap:6px;padding:7px 0;border-bottom:2px solid var(--border);font-size:11px;font-weight:700"><div class="compare-label"></div><div style="flex:1;text-align:center;color:var(--pink)">${compareA.name}</div><div style="flex:1;text-align:center;color:var(--green)">${compareB.name}</div></div>${rows.map(row=>{const av=compareA[row.ka],bv=compareB[row.kb];const aBetter=row.lowerBetter?(av<bv):(av>bv);const bBetter=row.lowerBetter?(bv<av):(bv>av);return`<div class="compare-row"><div class="compare-label">${row.label}</div><div class="compare-a ${aBetter?'better':bBetter?'worse':'same-val'}">${av}${row.unit}</div><div class="compare-b ${bBetter?'better':aBetter?'worse':'same-val'}">${bv}${row.unit}</div></div>`;}).join('')}${sharedVits.map(k=>{const vd=VIT_DATA[k];const av=compareA.vit[k],bv=compareB.vit[k];const aBetter=av>bv,bBetter=bv>av;return`<div class="compare-row"><div class="compare-label">${vd?vd.name:k}</div><div class="compare-a ${aBetter?'better':bBetter?'worse':'same-val'}">${av}${vd?vd.unit:''}</div><div class="compare-b ${bBetter?'better':aBetter?'worse':'same-val'}">${bv}${vd?vd.unit:''}</div></div>`;}).join('')}<div style="font-size:10px;color:var(--gray);margin-top:8px;text-align:center">All values per 100g · 🟢 better · 🔴 worse</div>`;}
+function openComparePicker(slot){comparePicking=slot;document.getElementById('compare-search').value='';renderComparePicker();document.getElementById('modal-compare-picker').classList.add('show');}
+function renderComparePicker(){const q=document.getElementById('compare-search').value.toLowerCase();const list=FOODS.filter(f=>!q||f.name.toLowerCase().includes(q));document.getElementById('compare-picker-list').innerHTML=list.map(f=>`<div class="meal-row" style="cursor:pointer" onclick="pickCompareFood('${f.id}')"><div style="flex:1"><div style="font-size:13px;font-weight:500">${f.name}</div><div style="font-size:11px;color:var(--gray)">${f.cal} kcal · ${f.p}g P per 100g</div></div></div>`).join('');}
+function pickCompareFood(id){const f=FOODS.find(x=>x.id===id);if(!f)return;if(comparePicking==='a')compareA=f;else compareB=f;closeModal('modal-compare-picker');renderCompare();}
+
+function changeMonth(dir){calViewDate.setMonth(calViewDate.getMonth()+dir);renderCalendar();}
+function renderCalendar(){const y=calViewDate.getFullYear(),m=calViewDate.getMonth();document.getElementById('cal-month-label').textContent=MONTHS[m]+' '+y;document.getElementById('cal-dow-row').innerHTML=DAYS.map(d=>`<div class="cal-dow">${d}</div>`).join('');const grid=document.getElementById('cal-days-grid');const firstDay=new Date(y,m,1).getDay();const daysInMonth=new Date(y,m+1,0).getDate();const todayStr=dateKey(0);let html='';for(let i=0;i<firstDay;i++)html+=`<div class="cal-day empty"></div>`;for(let d=1;d<=daysInMonth;d++){const k=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const isToday=k===todayStr,isFuture=k>todayStr,isSelected=k===selectedHistDate;const status=state.dayStatuses[k];const hasData=isToday?(state.todayFood.length||state.todayExercise.length):!!(state.history[k]?.food?.length||state.history[k]?.exercise?.length);const hasAdj=!!(state.dailyAdjustments[k]);let cls='cal-day';if(isToday)cls+=' today';if(isSelected)cls+=' selected';if(isFuture)cls+=' future';if(hasData)cls+=' has-data';if(status==='estimated'||status==='fasting')cls+=' estimated-day';else if(status==='skipped')cls+=' skipped-day';else if(editedDays.has(k))cls+=' edited-day';if(isFuture&&hasAdj)cls+=' projected';html+=`<div class="${cls}" onclick="selectDay('${k}')">${d}</div>`;}grid.innerHTML=html;document.getElementById('recal-banner').style.display=editedDays.size>0?'flex':'none';}
+function selectDay(k){selectedHistDate=k;renderCalendar();if(k>dateKey(0))renderFuturePanel(k);else renderHistoryPanel(k);}
+
+function renderHistoryPanel(k){const isToday=k===dateKey(0);const food=isToday?state.todayFood:(state.history[k]?.food||[]);const exercise=isToday?state.todayExercise:(state.history[k]?.exercise||[]);const calBurned=state.calBurned[k]||0;const adj=state.dailyAdjustments[k]||0;const totalCals=Math.round(food.reduce((s,f)=>s+(f.cals||0),0));const totalProt=Math.round(food.reduce((s,f)=>s+(f.protein||0),0)*10)/10;const totalCarbs=Math.round(food.reduce((s,f)=>s+(f.carbs||0),0)*10)/10;const totalFat=Math.round(food.reduce((s,f)=>s+(f.fat||0),0)*10)/10;const totalFibre=Math.round(food.reduce((s,f)=>s+(f.fibre||0),0)*10)/10;const target=getDayTarget(k);const isEditMode=editingDay===k;const status=state.dayStatuses[k];const statusBadge=status==='estimated'?'🟡 Estimate':(status==='skipped'?'⏭️ Skipped':(status==='fasting'?'🍵 Fasting':''));document.getElementById('history-card').innerHTML=`${!isToday?`<div class="${isEditMode?'edit-mode-banner':''}"><div><div style="font-size:12px;font-weight:600;color:${isEditMode?'var(--amber)':'var(--pink)'}">${isEditMode?'✏️ Editing: ':''}${formatDateLabel(k)}${statusBadge?` <span style="font-size:10px">${statusBadge}</span>`:''}</div></div>${isEditMode?`<button class="btn-sm btn-green-sm" onclick="doneEditing('${k}')">Done editing</button>`:`<button class="btn-sm btn-amber-sm" onclick="startEditing('${k}')">Edit this day</button>`}</div>`:`<div style="font-size:12px;font-weight:600;color:var(--pink);margin-bottom:10px">Today</div>`}<div style="text-align:center;margin-bottom:12px;margin-top:9px"><div style="font-size:32px;font-weight:700;color:var(--pink)">${totalCals}</div><div style="font-size:12px;color:var(--gray)">of ${target} kcal target${calBurned>0?` · <span style="color:var(--green)">+${calBurned} burned</span>`:''}</div>${adj!==0?`<div style="font-size:11px;color:${adj>0?'var(--green)':'var(--red)'};margin-top:1px">${adj>0?'+':''}${adj} kcal adjustment</div>`:''}</div><div class="hist-macros"><div class="hist-macro"><div class="val" style="color:var(--pink)">${totalProt}g</div><div class="lbl">Protein</div></div><div class="hist-macro"><div class="val" style="color:var(--amber)">${totalCarbs}g</div><div class="lbl">Carbs</div></div><div class="hist-macro"><div class="val" style="color:var(--purple)">${totalFat}g</div><div class="lbl">Fat</div></div><div class="hist-macro"><div class="val" style="color:var(--green)">${totalFibre}g</div><div class="lbl">Fibre</div></div><div class="hist-macro"><div class="val">${totalCals}</div><div class="lbl">kcal eaten</div></div><div class="hist-macro"><div class="val" style="color:var(--green)">${calBurned}</div><div class="lbl">kcal burned</div></div></div><div class="hist-section">Food ${(isToday||isEditMode)?`<button class="btn-sm btn-pink-sm" onclick="openFoodModal(null,'${k}')">+ Add</button>`:''}  </div><div id="hist-food-list">${renderHistFoodItems(food,k,isToday||isEditMode)}</div><div class="hist-section" style="margin-top:9px">Exercise ${(isToday||isEditMode)?`<button class="btn-sm btn-pink-sm" onclick="openExModal(null,'${k}')">+ Add</button>`:''}  </div><div id="hist-ex-list">${renderHistExItems(exercise,k,isToday||isEditMode)}</div>`;document.getElementById('history-panel').classList.add('open');}
+function renderHistFoodItems(food,k,editable){if(!food.length)return'<div class="empty-state" style="padding:8px 0">Nothing logged</div>';return food.map((f,i)=>`<div class="log-item"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.name}</div><div style="font-size:11px;color:var(--gray)">${f.cals} kcal · ${f.protein}g P · ${f.carbs}g C · ${f.fat}g F</div></div>${editable?`<button class="log-save" onclick="saveExistingFoodAsMeal(${i},'${k}')">Save</button><button class="log-edit" onclick="openFoodModal(${i},'${k}')">✎</button><button class="log-del" onclick="deleteFoodFromDay(${i},'${k}')">×</button>`:''}</div>`).join('');}
+function renderHistExItems(exercise,k,editable){if(!exercise.length)return'<div class="empty-state" style="padding:8px 0">Nothing logged</div>';return exercise.map((e,i)=>`<div class="log-item"><span class="tag tag-${e.type}" style="flex-shrink:0">${EX_CONFIG[e.type]?.label||e.type}</span><div style="flex:1;min-width:0;margin-left:3px"><div style="font-size:13px;font-weight:500">${e.name}</div><div style="font-size:11px;color:var(--gray)">${e.cals} kcal · +${e.proteinBump}g P · +${e.carbBump}g C</div></div>${editable?`<button class="log-edit" onclick="openExModal(${i},'${k}')">✎</button><button class="log-del" onclick="deleteExFromDay(${i},'${k}')">×</button>`:''}</div>`).join('');}
+function startEditing(k){editingDay=k;renderHistoryPanel(k);}
+function doneEditing(k){editingDay=null;snapshotDay(k);editedDays.add(k);renderCalendar();renderHistoryPanel(k);}
+
+function getFoodFromDay(k){return k===dateKey(0)?state.todayFood:(state.history[k]?.food||[]);}
+function getExFromDay(k){return k===dateKey(0)?state.todayExercise:(state.history[k]?.exercise||[]);}
+function clearFutureAdjustments(){const today=dateKey(0);Object.keys(state.dailyAdjustments).forEach(k=>{if(k>=today)state.dailyAdjustments[k]=0;});state.netBalance=0;state.balanceMethod=null;state.overageChosenToday=false;}
+function deleteFoodFromDay(idx,k){const isToday=k===dateKey(0);if(isToday)state.todayFood.splice(idx,1);else if(state.history[k])state.history[k].food.splice(idx,1);if(!isToday){editedDays.add(k);snapshotDay(k);}clearFutureAdjustments();save();if(isToday){renderDashboard();checkOverage();}else renderHistoryPanel(k);renderCalendar();}
+function deleteExFromDay(idx,k){const isToday=k===dateKey(0);const ex=getExFromDay(k)[idx];if(!ex)return;removeBumps(ex,k);if(isToday)state.todayExercise.splice(idx,1);else if(state.history[k])state.history[k].exercise.splice(idx,1);if(!isToday){editedDays.add(k);snapshotDay(k);}clearFutureAdjustments();save();if(isToday)renderDashboard();else renderHistoryPanel(k);renderCalendar();}
+function removeBumps(ex,baseKey){const cfg=EX_CONFIG[ex.type];if(ex.cals>0){const ck=shiftKey(baseKey,adjToOffset(ex.calDay));state.calBurned[ck]=Math.max(0,(state.calBurned[ck]||0)-ex.cals);}if(ex.proteinBump>0){const po=adjToOffset(ex.protAdj);if(cfg.protDays===2){const h=Math.round(ex.proteinBump/2*10)/10;state.proteinBumps[shiftKey(baseKey,po)]=Math.max(0,(state.proteinBumps[shiftKey(baseKey,po)]||0)-h);state.proteinBumps[shiftKey(baseKey,po+1)]=Math.max(0,(state.proteinBumps[shiftKey(baseKey,po+1)]||0)-h);}else state.proteinBumps[shiftKey(baseKey,po)]=Math.max(0,(state.proteinBumps[shiftKey(baseKey,po)]||0)-ex.proteinBump);}if(ex.carbBump>0){const ck=shiftKey(baseKey,adjToOffset(ex.calDay));state.carbBumps[ck]=Math.max(0,(state.carbBumps[ck]||0)-ex.carbBump);}}
+function saveExistingFoodAsMeal(idx,k){const food=getFoodFromDay(k)[idx];if(!food)return;state.savedMeals['m'+Date.now()]={...food};save();alert(`"${food.name}" saved! ✨`);}
+
+function openFoodModal(editIdx,dayKey){pendingFoodEdit=editIdx!=null?{idx:editIdx,dayKey}:null;foodModalDay=dayKey||dateKey(0);document.getElementById('food-modal-title').textContent=editIdx!=null?'Edit food':'Add food';document.getElementById('food-tabs').style.display=editIdx!=null?'none':'flex';switchFoodTab('manual');if(editIdx!=null){const f=getFoodFromDay(foodModalDay)[editIdx];if(f){document.getElementById('fi-name').value=f.name;document.getElementById('fi-cals').value=f.cals;document.getElementById('fi-protein').value=f.protein;document.getElementById('fi-carbs').value=f.carbs;document.getElementById('fi-fat').value=f.fat;document.getElementById('fi-fibre').value=f.fibre;}}else clearInputs('fi');document.getElementById('modal-food').classList.add('show');}
+function submitFoodModal(saveToLibrary){const f=getFoodInputs('fi');if(!f.name||!f.cals){alert('Please enter at least a name and calories.');return;}const k=foodModalDay||dateKey(0);const isToday=k===dateKey(0);if(pendingFoodEdit!=null){if(isToday)state.todayFood[pendingFoodEdit.idx]=f;else if(state.history[k])state.history[k].food[pendingFoodEdit.idx]=f;if(!isToday){editedDays.add(k);snapshotDay(k);}}else{if(isToday)state.todayFood.push(f);else{if(!state.history[k])state.history[k]={food:[],exercise:[],calBurned:0,proteinBump:0,carbBump:0,adjustment:0};state.history[k].food.push(f);editedDays.add(k);snapshotDay(k);}}if(saveToLibrary)state.savedMeals['m'+Date.now()]={...f};clearFutureAdjustments();save();closeModal('modal-food');if(isToday){renderDashboard();checkOverage();}else{renderHistoryPanel(k);renderCalendar();}}
+
+function openExModal(editIdx,dayKey){pendingExEdit=editIdx!=null?{idx:editIdx,dayKey}:null;exModalDay=dayKey||dateKey(0);document.getElementById('ex-modal-title').textContent=editIdx!=null?'Edit exercise':'Log exercise';document.getElementById('ex-tabs').style.display=editIdx!=null?'none':'flex';switchExTab('manual');pendingCalAdj='today';pendingProtAdj='today';document.querySelectorAll('#cal-adj-opts .adj-opt').forEach((b,i)=>b.classList.toggle('active',i===0));document.querySelectorAll('#prot-adj-opts .adj-opt').forEach((b,i)=>b.classList.toggle('active',i===0));if(editIdx!=null){const e=getExFromDay(exModalDay)[editIdx];if(e){document.getElementById('ex-name').value=e.name;document.getElementById('ex-type').value=e.type;document.getElementById('ex-cals').value=e.cals;document.getElementById('ex-protein-bump').value=e.proteinBump||0;document.getElementById('ex-carb-bump').value=e.carbBump||0;pendingCalAdj=e.calDay||'today';pendingProtAdj=e.protAdj||'today';}}else{document.getElementById('ex-type').value='compound';document.getElementById('ex-name').value='';document.getElementById('ex-cals').value='';updateExSuggestion();}document.getElementById('modal-ex').classList.add('show');}
+function switchExTab(t){document.getElementById('ex-tab-manual').style.display=t==='manual'?'block':'none';document.getElementById('ex-tab-saved').style.display=t==='saved'?'block':'none';document.getElementById('tab-ex-manual').style.cssText=`flex:1;padding:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:${t==='manual'?'var(--pink)':'#fff'};color:${t==='manual'?'#fff':'var(--gray)'}`;document.getElementById('tab-ex-saved').style.cssText=`flex:1;padding:8px;border:none;font-size:12px;cursor:pointer;background:${t==='saved'?'var(--pink)':'#fff'};color:${t==='saved'?'#fff':'var(--gray)'}`;if(t==='saved')renderModalSavedExList();}
+function submitExModal(saveToLibrary){const name=document.getElementById('ex-name').value.trim();const cals=parseFloat(document.getElementById('ex-cals').value)||0;const type=document.getElementById('ex-type').value;const bump=parseFloat(document.getElementById('ex-protein-bump').value)||0;const carbBump=parseFloat(document.getElementById('ex-carb-bump').value)||0;if(!name){alert('Please enter an exercise name.');return;}const cfg=EX_CONFIG[type];const k=exModalDay||dateKey(0);const isToday=k===dateKey(0);const exObj={name,type,cals,calDay:pendingCalAdj,proteinBump:bump,carbBump,protAdj:pendingProtAdj};if(pendingExEdit!=null){const old=getExFromDay(k)[pendingExEdit.idx];if(old)removeBumps(old,k);if(isToday)state.todayExercise[pendingExEdit.idx]=exObj;else if(state.history[k])state.history[k].exercise[pendingExEdit.idx]=exObj;if(!isToday){editedDays.add(k);snapshotDay(k);}}else{if(isToday)state.todayExercise.push(exObj);else{if(!state.history[k])state.history[k]={food:[],exercise:[],calBurned:0,proteinBump:0,carbBump:0,adjustment:0};state.history[k].exercise.push(exObj);editedDays.add(k);snapshotDay(k);}}const calOffset=adjToOffset(pendingCalAdj);const protOffset=adjToOffset(pendingProtAdj);if(cals>0){const ck=shiftKey(k,calOffset);state.calBurned[ck]=(state.calBurned[ck]||0)+cals;}if(bump>0&&cfg.protDays>0){if(cfg.protDays===2){const h=Math.round(bump/2*10)/10;state.proteinBumps[shiftKey(k,protOffset)]=(state.proteinBumps[shiftKey(k,protOffset)]||0)+h;state.proteinBumps[shiftKey(k,protOffset+1)]=(state.proteinBumps[shiftKey(k,protOffset+1)]||0)+h;}else state.proteinBumps[shiftKey(k,protOffset)]=(state.proteinBumps[shiftKey(k,protOffset)]||0)+bump;}if(carbBump>0){const ck=shiftKey(k,calOffset);state.carbBumps[ck]=(state.carbBumps[ck]||0)+carbBump;}if(saveToLibrary)state.savedExercises['e'+Date.now()]={name,type,cals,proteinBump:bump,carbBump};save();closeModal('modal-ex');if(isToday)renderDashboard();else{renderHistoryPanel(k);renderCalendar();}}
+
+function renderFuturePanel(k){calcTargets();const base=state.tdee||2000;const adj=state.dailyAdjustments[k]||0;const burned=state.calBurned[k]||0;const projCals=Math.round(base+adj+burned);const protBump=state.proteinBumps[k]||0,carbBump=state.carbBumps[k]||0;const carbAdj=Math.round((adj*0.4)/4),fatAdj=Math.round((adj*0.3)/9);document.getElementById('history-card').innerHTML=`<div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:10px">📅 Projected — ${formatDateLabel(k)}</div><div style="text-align:center;margin-bottom:12px"><div style="font-size:32px;font-weight:700;color:var(--amber)">${projCals}</div><div style="font-size:12px;color:var(--gray)">projected calorie target</div>${adj!==0?`<div style="font-size:11px;color:${adj>0?'var(--green)':'var(--red)'};margin-top:1px">${adj>0?'+':''}${adj} kcal adjustment</div>`:''}</div><div class="hist-macros"><div class="hist-macro"><div class="val" style="color:var(--pink)">${Math.round(macroTargets.protein+protBump)}g</div><div class="lbl">Protein</div></div><div class="hist-macro"><div class="val" style="color:var(--amber)">${Math.round(macroTargets.carbs+carbBump+carbAdj)}g</div><div class="lbl">Carbs</div></div><div class="hist-macro"><div class="val" style="color:var(--purple)">${Math.round(macroTargets.fat+fatAdj)}g</div><div class="lbl">Fat</div></div><div class="hist-macro"><div class="val" style="color:var(--green)">25g</div><div class="lbl">Fibre</div></div><div class="hist-macro"><div class="val">${projCals}</div><div class="lbl">kcal target</div></div><div class="hist-macro"><div class="val" style="color:var(--green)">${burned}</div><div class="lbl">kcal earned</div></div></div><div style="font-size:12px;color:var(--gray);text-align:center;padding:7px 0">No food or exercise logged yet.</div>`;document.getElementById('history-panel').classList.add('open');}
+
+function openSaveMealModal(){document.getElementById('modal-save-meal').classList.add('show');}
+function openSaveExModal(){document.getElementById('modal-save-ex').classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function getFoodInputs(p){return{name:document.getElementById(p+'-name').value.trim(),cals:parseFloat(document.getElementById(p+'-cals').value)||0,protein:parseFloat(document.getElementById(p+'-protein').value)||0,carbs:parseFloat(document.getElementById(p+'-carbs').value)||0,fat:parseFloat(document.getElementById(p+'-fat').value)||0,fibre:parseFloat(document.getElementById(p+'-fibre').value)||0};}
+function clearInputs(p){['name','cals','protein','carbs','fat','fibre'].forEach(f=>{const el=document.getElementById(p+'-'+f);if(el)el.value='';});}
+function saveMealFromModal(){const f=getFoodInputs('sm');if(!f.name||!f.cals){alert('Please enter at least a name and calories.');return;}state.savedMeals['m'+Date.now()]=f;save();clearInputs('sm');closeModal('modal-save-meal');renderSavedMealsList();}
+function saveExFromModal(){const name=document.getElementById('se-name').value.trim();if(!name){alert('Please enter a name.');return;}state.savedExercises['e'+Date.now()]={name,type:document.getElementById('se-type').value,cals:parseFloat(document.getElementById('se-cals').value)||0,proteinBump:parseFloat(document.getElementById('se-protein').value)||0,carbBump:parseFloat(document.getElementById('se-carbs').value)||0};save();closeModal('modal-save-ex');renderSavedExList();}
+function openQtyModal(k,dayKey){qtyMealIdx=k;qtyDayKey=dayKey||dateKey(0);const m=state.savedMeals[k];document.getElementById('qty-title').textContent='Add: '+m.name;document.getElementById('qty-base-info').innerHTML=`<strong>Full (100%):</strong> ${m.cals} kcal · ${m.protein}g P · ${m.carbs}g C · ${m.fat}g F · ${m.fibre}g fibre`;document.getElementById('qty-pct').value=100;updateQtyPreview();closeModal('modal-food');document.getElementById('modal-qty').classList.add('show');}
+function updateQtyPreview(){if(!qtyMealIdx)return;const m=state.savedMeals[qtyMealIdx];if(!m)return;const pct=(parseFloat(document.getElementById('qty-pct').value)||100)/100;const r=v=>Math.round(v*pct*10)/10;document.getElementById('qty-preview').innerHTML=`<strong>Adding (${Math.round(pct*100)}%):</strong> ${r(m.cals)} kcal · ${r(m.protein)}g P · ${r(m.carbs)}g C · ${r(m.fat)}g F · ${r(m.fibre)}g fibre`;}
+function confirmQtyAdd(){if(!qtyMealIdx)return;const m=state.savedMeals[qtyMealIdx];if(!m)return;const pct=(parseFloat(document.getElementById('qty-pct').value)||100)/100;const r=v=>Math.round(v*pct*10)/10;const f={name:m.name+(pct!==1?' ('+Math.round(pct*100)+'%)':''),cals:r(m.cals),protein:r(m.protein),carbs:r(m.carbs),fat:r(m.fat),fibre:r(m.fibre)};const k=qtyDayKey||dateKey(0);const isToday=k===dateKey(0);if(isToday)state.todayFood.push(f);else{if(!state.history[k])state.history[k]={food:[],exercise:[],calBurned:0,proteinBump:0,carbBump:0,adjustment:0};state.history[k].food.push(f);editedDays.add(k);snapshotDay(k);}save();closeModal('modal-qty');if(isToday){renderDashboard();checkOverage();}else{renderHistoryPanel(k);renderCalendar();}qtyMealIdx=null;}
+function addSavedExToDay(k){const ex=state.savedExercises[k];if(!ex)return;closeModal('modal-ex');pendingExEdit=null;exModalDay=dateKey(0);switchExTab('manual');document.getElementById('ex-name').value=ex.name;document.getElementById('ex-type').value=ex.type;document.getElementById('ex-cals').value=ex.cals;document.getElementById('ex-protein-bump').value=ex.proteinBump||0;document.getElementById('ex-carb-bump').value=ex.carbBump||0;document.getElementById('ex-modal-title').textContent='Log exercise';document.getElementById('modal-ex').classList.add('show');}
+function renderSavedMealsList(){const c=document.getElementById('saved-meals-list');const keys=Object.keys(state.savedMeals||{});if(!keys.length){c.innerHTML='<div class="empty-state">No saved meals yet</div>';return;}c.innerHTML=keys.map(k=>{const m=state.savedMeals[k];return`<div class="meal-row"><div style="flex:1"><div style="font-size:13px;font-weight:500">${m.name}</div><div style="font-size:11px;color:var(--gray);margin-top:1px">${m.cals} kcal · ${m.protein}g P · ${m.carbs}g C · ${m.fat}g F</div></div><button class="btn-sm btn-pink-sm" onclick="openQtyModal('${k}')" style="margin-right:5px">Add</button><button class="log-del" onclick="deleteSavedMeal('${k}')">×</button></div>`;}).join('');}
+function renderSavedExList(){const c=document.getElementById('saved-exercises-list');const keys=Object.keys(state.savedExercises||{});if(!keys.length){c.innerHTML='<div class="empty-state">No saved exercises yet</div>';return;}c.innerHTML=keys.map(k=>{const e=state.savedExercises[k];return`<div class="meal-row"><div style="flex:1"><span class="tag tag-${e.type}" style="margin-right:5px">${EX_CONFIG[e.type]?.label||e.type}</span><span style="font-size:13px;font-weight:500">${e.name}</span><div style="font-size:11px;color:var(--gray);margin-top:1px">${e.cals} kcal · +${e.proteinBump||0}g P · +${e.carbBump||0}g C</div></div><button class="btn-sm btn-pink-sm" onclick="addSavedExToDay('${k}')" style="margin-right:5px">Add</button><button class="log-del" onclick="deleteSavedEx('${k}')">×</button></div>`;}).join('');}
+function renderModalSavedList(){const c=document.getElementById('modal-saved-list');const keys=Object.keys(state.savedMeals||{});if(!keys.length){c.innerHTML='<div class="empty-state">No saved meals yet</div>';return;}c.innerHTML=keys.map(k=>{const m=state.savedMeals[k];return`<div class="meal-row"><div style="flex:1"><div style="font-size:13px;font-weight:500">${m.name}</div><div style="font-size:11px;color:var(--gray)">${m.cals} kcal · ${m.protein}g P</div></div><button class="btn-sm btn-pink-sm" onclick="openQtyModal('${k}','${foodModalDay||dateKey(0)}')">Add</button></div>`;}).join('');}
+function renderModalSavedExList(){const c=document.getElementById('modal-saved-ex-list');const keys=Object.keys(state.savedExercises||{});if(!keys.length){c.innerHTML='<div class="empty-state">No saved exercises yet</div>';return;}c.innerHTML=keys.map(k=>{const e=state.savedExercises[k];return`<div class="meal-row"><div style="flex:1"><span class="tag tag-${e.type}">${EX_CONFIG[e.type]?.label||e.type}</span> <span style="font-size:13px;font-weight:500">${e.name}</span><div style="font-size:11px;color:var(--gray)">${e.cals} kcal</div></div><button class="btn-sm btn-pink-sm" onclick="addSavedExToDay('${k}')">Add</button></div>`;}).join('');}
+function deleteSavedMeal(k){if(confirm('Delete?')){delete state.savedMeals[k];save();renderSavedMealsList();}}
+function deleteSavedEx(k){if(confirm('Delete?')){delete state.savedExercises[k];save();renderSavedExList();}}
+
+function setCalAdj(v,btn){pendingCalAdj=v;document.querySelectorAll('#cal-adj-opts .adj-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function setProtAdj(v,btn){pendingProtAdj=v;document.querySelectorAll('#prot-adj-opts .adj-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');updateSplitInfo();}
+function updateExSuggestion(){const type=document.getElementById('ex-type').value;const cfg=EX_CONFIG[type];const w=getWeightKg();document.getElementById('ex-protein-bump').value=Math.round(w*cfg.protM*10)/10||'';document.getElementById('ex-carb-bump').value=Math.round(w*cfg.carbM*10)/10||'';const ib=document.getElementById('ex-info-box');ib.style.display='block';if(type==='steps'){ib.textContent='Steps: small carb bump, no protein bump.';document.getElementById('protein-adj-field').style.display='none';}else{ib.textContent=`${cfg.label}: protein split across ${cfg.protDays} day(s), carbs same day.`;document.getElementById('protein-adj-field').style.display='block';}updateSplitInfo();}
+function updateSplitInfo(){const type=document.getElementById('ex-type').value;const cfg=EX_CONFIG[type];const bump=parseFloat(document.getElementById('ex-protein-bump').value)||0;const info=document.getElementById('ex-split-info');if(type==='steps'||!bump){info.style.display='none';return;}info.style.display='block';const o=adjToOffset(pendingProtAdj);const dn=['today','tomorrow','day after','3 days from now'];info.textContent=cfg.protDays===2?`Protein: +${Math.round(bump/2*10)/10}g on ${dn[o]}, +${Math.round(bump/2*10)/10}g on ${dn[o+1]}`:`Protein: +${bump}g on ${dn[o]}`;}
+document.addEventListener('input',e=>{if(e.target.id==='ex-protein-bump')updateSplitInfo();if(e.target.id==='qty-pct')updateQtyPreview();if(e.target.id==='explore-add-grams'&&exploreAddFood){const g=parseFloat(e.target.value)||0;const f=exploreAddFood;const r=v=>Math.round(v*g/100*10)/10;document.getElementById('explore-add-preview').innerHTML=g>0?`<strong>For ${g}g:</strong> ${r(f.cal)} kcal · ${r(f.p)}g P · ${r(f.c)}g C · ${r(f.f)}g F · ${r(f.fi)}g fibre`:'Enter grams to see calculated values';}});
+
+function getWeightKg(){if(!state.profile)return 65;let w=state.profile.weight||65;if(state.profile['weight-unit']==='lbs')w*=0.453592;return w;}
+function renderDashboard(){if(!state.profile){document.getElementById('no-profile-msg').style.display='block';document.getElementById('dashboard').style.display='none';return;}document.getElementById('no-profile-msg').style.display='none';document.getElementById('dashboard').style.display='block';calcTargets();const target=getTodayCalTarget(),eaten=getTodayEaten(),burned=getTodayBurned();const rem=target-eaten;const isOver=rem<0;document.getElementById('cals-remaining').textContent=Math.abs(rem);document.getElementById('cals-remaining').style.color=isOver?'var(--red)':'var(--pink)';document.getElementById('cals-label').textContent=isOver?'calories over today':'calories remaining today';document.getElementById('dash-target').textContent=target;document.getElementById('dash-eaten').textContent=eaten;document.getElementById('dash-burned').textContent=burned;const pct=Math.min(100,Math.round((eaten/target)*100));document.getElementById('cal-progress').style.width=pct+'%';document.getElementById('cal-progress').style.background=isOver?'var(--red)':'var(--pink)';const modeLabels={deficit:'Calorie deficit — fat loss',surplus:'Calorie surplus — muscle building',recomp:'Recomp — maintenance + high protein',maintenance:'Maintenance calories'};const modeColors={deficit:'var(--red)',surplus:'var(--green)',recomp:'var(--purple)',maintenance:'var(--gray)'};const mode=state.calMode||'maintenance';const mb=document.getElementById('mode-badge');mb.textContent=modeLabels[mode];mb.style.color=modeColors[mode];const adj=state.dailyAdjustments[dateKey(0)]||0;const bb=document.getElementById('balance-badge');if(adj!==0){bb.style.display='block';bb.textContent=adj>0?`+${adj} kcal credit today`:`${adj} kcal adjustment today`;bb.style.color=adj>0?'var(--green)':'var(--red)';}else bb.style.display='none';const protT=getTodayProteinTarget(),carbT=getTodayCarbTarget(),fatT=getTodayFatTarget();const targets=[protT,carbT,fatT,25];const ids=['p','c','f','fi'];const macroKeys=['protein','carbs','fat','fibre'];const colors=['var(--pink)','var(--amber)','var(--purple)','var(--green)'];ids.forEach((k,i)=>{const e=getMacroEaten(macroKeys[i]),t=targets[i];const el=document.getElementById(k+'-eaten');el.textContent=e+'g';const isGood=(macroKeys[i]==='fibre'&&e>=t);el.style.color=isGood?'var(--green)':(e>t&&macroKeys[i]!=='fibre')?'var(--red)':colors[i];document.getElementById(k+'-tgt').textContent='of '+t+'g';});const pb=state.proteinBumps[dateKey(0)]||0,cb=state.carbBumps[dateKey(0)]||0;if(pb>0)document.getElementById('p-tgt').textContent=`of ${protT}g (+${Math.round(pb)}g ex)`;if(cb>0)document.getElementById('c-tgt').textContent=`of ${carbT}g (+${Math.round(cb)}g ex)`;const fl=document.getElementById('food-log-list');fl.innerHTML=state.todayFood.length?state.todayFood.map((f,i)=>`<div class="log-item"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.name}</div><div style="font-size:11px;color:var(--gray)">${f.cals} kcal · ${f.protein}g P · ${f.carbs}g C · ${f.fat}g F</div></div><button class="log-save" onclick="saveExistingFoodAsMeal(${i},'${dateKey(0)}')">Save</button><button class="log-edit" onclick="openFoodModal(${i},'${dateKey(0)}')">✎</button><button class="log-del" onclick="deleteFoodFromDay(${i},'${dateKey(0)}')">×</button></div>`).join(''):'<div class="empty-state">Nothing logged yet</div>';const el=document.getElementById('ex-log-list');el.innerHTML=state.todayExercise.length?state.todayExercise.map((e,i)=>`<div class="log-item"><span class="tag tag-${e.type}" style="flex-shrink:0">${EX_CONFIG[e.type]?.label||e.type}</span><div style="flex:1;min-width:0;margin-left:3px"><div style="font-size:13px;font-weight:500">${e.name}</div><div style="font-size:11px;color:var(--gray)">${e.cals} kcal · +${e.proteinBump}g P · +${e.carbBump}g C → ${e.calDay}</div></div><button class="log-edit" onclick="openExModal(${i},'${dateKey(0)}')">✎</button><button class="log-del" onclick="deleteExFromDay(${i},'${dateKey(0)}')">×</button></div>`).join(''):'<div class="empty-state">No exercise logged</div>';document.getElementById('header-sub').textContent=(isOver?'⚠️ ':'')+Math.abs(rem)+' kcal '+(isOver?'over':'left')+' today';renderSuppChecklist();renderColourChecklist();}
+
+function openStartFreshModal(){document.getElementById('modal-start-fresh').classList.add('show');}
+function confirmStartFresh(){closeModal('modal-start-fresh');performStartFresh(true);}
+function performStartFresh(showMsg){const today=dateKey(0);Object.keys(state.dailyAdjustments).forEach(k=>{if(k>=today)state.dailyAdjustments[k]=0;});state.netBalance=0;state.balanceMethod=null;state.overageChosenToday=false;state.proteinUnderStreak=0;save();renderDashboard();if(showMsg)alert('Fresh start! Balance reset. History preserved. 🌱');}
+
+function toggleHeightUnit(){const u=document.getElementById('p-height-unit').value;document.getElementById('height-cm-field').style.display=u==='cm'?'block':'none';document.getElementById('height-ft-field').style.display=u==='ft'?'flex':'none';}
+function getHeightCm(){const u=document.getElementById('p-height-unit').value;if(u==='cm')return parseFloat(document.getElementById('p-height-cm').value)||0;return((parseFloat(document.getElementById('p-height-ft').value)||0)*12+(parseFloat(document.getElementById('p-height-in').value)||0))*2.54;}
+function saveProfile(){const p={};const hu=document.getElementById('p-height-unit').value;p['height-unit']=hu;if(hu==='cm')p['height-cm']=parseFloat(document.getElementById('p-height-cm').value)||0;else{p['height-ft']=parseFloat(document.getElementById('p-height-ft').value)||0;p['height-in']=parseFloat(document.getElementById('p-height-in').value)||0;}p['height-cm-val']=getHeightCm();p.weight=parseFloat(document.getElementById('p-weight').value)||65;p['weight-unit']=document.getElementById('p-weight-unit').value;p.age=parseInt(document.getElementById('p-age').value)||25;p.gender=document.getElementById('p-gender').value;ZONES.forEach(z=>{p['m-'+z.id]=parseFloat(document.getElementById('m-'+z.id).value)||0;});state.profile=p;calcTargets();save();goTo('home');}
+function loadProfileForm(){buildGoalZones();if(!state.profile)return;const p=state.profile;const hu=p['height-unit']||'cm';document.getElementById('p-height-unit').value=hu;toggleHeightUnit();if(hu==='cm')document.getElementById('p-height-cm').value=p['height-cm']||'';else{document.getElementById('p-height-ft').value=p['height-ft']||'';document.getElementById('p-height-in').value=p['height-in']||'';}const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v;};set('p-weight',p.weight);set('p-weight-unit',p['weight-unit']);set('p-age',p.age);set('p-gender',p.gender);ZONES.forEach(z=>set('m-'+z.id,p['m-'+z.id]));}
+function buildGoalZones(){
+  const c=document.getElementById('goal-zones');
+  const ml=document.getElementById('ml-goal-zones');
+  const html=ZONES.map(z=>`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:500;margin-bottom:5px">${z.label}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${['lose','build','maintain','recomp'].map(g=>`<button class="goal-pill ${g} ${(state.goals[z.id]||'maintain')===g?'active':''}" onclick="setGoal('${z.id}','${g}',this)">${g.charAt(0).toUpperCase()+g.slice(1)}</button>`).join('')}</div></div>`).join('');
+  if(c)c.innerHTML=html;
+  if(ml)ml.innerHTML=html;
+}
+function setGoal(zoneId,goal,btn){
+  state.goals[zoneId]=goal;
+  document.querySelectorAll(`[onclick*="'${zoneId}'"]`).forEach(b=>{
+    b.classList.remove('active');
+    if(b.getAttribute('onclick').includes(`'${goal}'`))b.classList.add('active');
+  });
+  calcTargets();save();
+}
+function calcTargets(){
+  if(!state.profile)return;
+  const p=state.profile;
+  const h=p['height-cm-val']||p['height-cm']||170;
+  const w=getWeightKg();
+  const a=p.age||25;
+  const g=p.gender||'female';
+  let bmr=g==='male'?(10*w+6.25*h-5*a+5):(10*w+6.25*h-5*a-161);
+  const act=1.55;
+  state.tdee=Math.round(bmr*act);
+  const goals=state.goals||{};
+  const vals=Object.values(goals);
+  const hasLose=vals.includes('lose');
+  const hasBuild=vals.includes('build');
+  const hasRecomp=vals.includes('recomp');
+  if(hasLose&&!hasBuild){state.calMode='deficit';state.tdee=Math.round(state.tdee*0.85);}
+  else if(hasBuild&&!hasLose){state.calMode='surplus';state.tdee=Math.round(state.tdee*1.1);}
+  else if(hasRecomp){state.calMode='recomp';}
+  else{state.calMode='maintenance';}
+  const protMulti={deficit:2.2,surplus:1.8,recomp:2.4,maintenance:1.6};
+  macroTargets.protein=Math.round(w*(protMulti[state.calMode]||1.6));
+  macroTargets.fat=Math.round((state.tdee*0.25)/9);
+  macroTargets.carbs=Math.round((state.tdee-macroTargets.protein*4-macroTargets.fat*9)/4);
+  macroTargets.fibre=25;
+}
+
+function openMeasureLogModal(){buildGoalZones();document.getElementById('modal-measure-log').classList.add('show');}
+function openMeasureHistoryModal(){renderMeasureHistory();document.getElementById('modal-measure-history').classList.add('show');}
+function saveMeasurementLog(){
+  const entry={date:dateKey(0)};
+  ZONES.forEach(z=>{const v=parseFloat(document.getElementById('ml-'+z.id).value)||0;if(v)entry[z.id]=v;});
+  if(!state.measurementHistory)state.measurementHistory=[];
+  state.measurementHistory.unshift(entry);
+  ZONES.forEach(z=>{if(entry[z.id]){const el=document.getElementById('m-'+z.id);if(el)el.value=entry[z.id];}});
+  save();closeModal('modal-measure-log');
+}
+function renderMeasureHistory(){
+  const list=document.getElementById('measure-tab-list');
+  const h=state.measurementHistory||[];
+  if(!h.length){list.innerHTML='<div class="empty-state">No measurements logged yet</div>';return;}
+  list.innerHTML=h.map(e=>`<div class="measure-entry"><div class="measure-date">${formatDateLabel(e.date)}</div><div class="measure-grid">${ZONES.filter(z=>e[z.id]).map(z=>`<div class="measure-item"><span>${z.label}</span><span class="measure-val">${e[z.id]}cm</span></div>`).join('')}</div></div>`).join('');
+  const comp=document.getElementById('measure-tab-compare');
+  if(h.length<2){comp.innerHTML='<div class="empty-state" style="padding:18px">Need at least 2 entries to compare</div>';return;}
+  const latest=h[0],prev=h[1];
+  comp.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:10px"><span>Latest: ${formatDateLabel(latest.date)}</span><span>Previous: ${formatDateLabel(prev.date)}</span></div>${ZONES.filter(z=>latest[z.id]||prev[z.id]).map(z=>{const lv=latest[z.id]||0,pv=prev[z.id]||0;const diff=lv-pv;const cls=diff<0?'report-good':diff>0?'report-bad':'';return`<div class="report-row"><span class="report-label">${z.label}</span><div style="text-align:right"><div class="report-val">${lv||'—'}cm vs ${pv||'—'}cm</div><div class="report-val ${cls}" style="font-size:11px">${diff!==0?(diff>0?'+':'')+diff.toFixed(1)+'cm':'No change'}</div></div></div>`;}).join('')}`;
+}
+function switchMeasureTab(tab,btn){document.getElementById('measure-tab-list').style.display=tab==='list'?'block':'none';document.getElementById('measure-tab-compare').style.display=tab==='compare'?'block':'none';document.querySelectorAll('#modal-measure-history .toggle-tab button').forEach(b=>{b.className=b===btn?'active-tab':'inactive-tab';});}
+
+function deleteAccount(){document.getElementById('modal-delete-account').classList.add('show');}
+
+tryAutoLogin();
+</script>
+</body>
+</html>
